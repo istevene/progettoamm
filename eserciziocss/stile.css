@@ -5,11 +5,15 @@ body {
 }
 
 #header, #footer {
-    color: #fefefe;
+    color: white;
 }
 
 #logo {
-    background-color: #1c345a
+    background-color: #1c345a;
+}
+
+#logo h1{
+    color: white;
 }
 
 .current_page_item {
