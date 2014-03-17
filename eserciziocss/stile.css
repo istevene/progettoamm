@@ -1,0 +1,38 @@
+body {
+    font-size: 14px;
+    font-family: "Open Sans", Arial, sans-serif;
+    color: #010101
+}
+
+#header, #footer {
+    color: #fefefe;
+}
+
+#logo {
+    color: #1c345a
+}
+
+.current_page_item {
+    font-weight: bold;
+}
+
+#content h2 {
+    color: #9e1616;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: #1c345a;
+}
+
+a:link, a:visited {
+    color: #9e1616;
+}
+
+a:hover {
+    font-weight: bold;
+    text-decoration: underline; 
+}
+
+a[href="studente_esami.html"] {
+    color: #1c345a;
+}
