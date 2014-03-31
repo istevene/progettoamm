@@ -78,9 +78,9 @@
                     Stefano Lande
                 </p>
                 <p>
-                    <a id="htmlval" href="http://validator.w3.org/check?uri=refer" target="_blank">HTML Valid</a>
+                    <a id="htmlval" href="http://validator.w3.org/check?uri=refer">HTML Valid</a>
     
-                    <a id="cssval" href="http://jigsaw.w3.org/css-validator/check/refer" target="_blank">CSS Valid</a>
+                    <a id="cssval" href="http://jigsaw.w3.org/css-validator/check/refer">CSS Valid</a>
                 </p>
             </div>
         </div>
