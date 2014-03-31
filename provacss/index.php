@@ -32,6 +32,8 @@
             <div id="content">
                 <h2>Benvenuto nel sito!</h2>
                 <?
+                	date_default_timezone_set('Europe/Rome');
+                	
                     echo "Hello world! <br/>";
                     $saluto = "ciao";
                     $nome = "Stefano";
