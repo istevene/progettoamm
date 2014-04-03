@@ -1,4 +1,6 @@
-
+<?
+    include_once('funzioni.php');
+?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -32,7 +34,7 @@
             <div id="content">
                 <h2>Benvenuto nel sito!</h2>
                 <?
-                	date_default_timezone_set('Europe/Rome');
+                    date_default_timezone_set('Europe/Rome');
                 	
                     echo "Hello world! <br/>";
                     $saluto = "ciao";
@@ -68,6 +70,14 @@
                     echo "La somma dei primi 100 interi è $somma";
                     //dhgvfdgifk;
                     //phpinfo();
+                    
+                    echo "2 elevato 12 è " . potenza(2,12);
+                    $a=5;
+                    $b=2;
+                    echo "<br />a vale: $a, b vale $b.";
+                    echo "<br /> Scambio <br />";
+                    scambia($a, $b);
+                    echo "a vale: $a, b vale $b.";
                 ?>
             </div>
             
