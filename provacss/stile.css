@@ -1,8 +1,8 @@
 body {
     background-color: #cccccc;
     font-family: sans-serif;
-    margin: 8px;
     width: 1000px;
+    margin: 0px auto;
 }
 
 header {
@@ -71,7 +71,6 @@ a:hover{
     border: 2px solid #1c345a;
     border-top: 1px solid #1c345a;
     border-bottom: 1px solid #1c345a;
-    margin: 0px auto;
     box-shadow: 0px 0px 20px;
     background-color: white;
 }
