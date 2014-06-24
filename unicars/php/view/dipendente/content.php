@@ -58,13 +58,9 @@ switch ($vd->getSottoPagina()) {
             Scegli una fra le seguenti sezioni:
         </p>
         <ul class="panel">
-            <li><a href="docente/anagrafica<?= $vd->scriviToken('?')?>" id="pnl-anagrafica">
-                    Anagrafica
-                </a>
-            </li>
-            <li><a href="docente/appelli<?= $vd->scriviToken('?')?>" id="pnl-iscrizione">Appelli</a></li>
-            <li><a href="docente/reg_esami<?= $vd->scriviToken('?')?>" id="pnl-libretto">Registrazione Esami</a></li>
-            <li><a href="docente/el_esami<?= $vd->scriviToken('?')?>" id="pnl-cerca">Elenco Esami</a></li>
+            <li><a href="dipendente/anagrafica">Anagrafica</a></li>
+            <li><a href="dipedente/auto">Parco auto</a></li>
+            <li><a href="dipendente/prenotazioni">Prenotazioni</a></li>
         </ul>
         <?php
         break;

@@ -172,7 +172,6 @@ class UserFactory {
         return $studenti;
     }
 
-
     public function cercaUtentePerId($id, $role) {
         $intval = filter_var($id, FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
         if (!isset($intval)) {
@@ -275,7 +274,8 @@ class UserFactory {
         $dipendente->setUsername($row['dipendenti_username']);
         $dipendente->setPassword($row['dipendenti_password']);
         $dipendente->setNumeroTel($row['dipendenti_numerotel']);
-        
+
+
         return $dipendente;
     }
 
@@ -309,11 +309,11 @@ class UserFactory {
 
     /**
      * Rende persistenti le modifiche all'anagrafica di un cliente sul db
-     * @param Cliente $s il cliente considerato
+     * @param Cliente $c il cliente considerato
      * @param mysqli_stmt $stmt un prepared statement
      * @return int il numero di righe modificate
      */
-    private function salvaCliente(Cliente $s, mysqli_stmt $stmt) {
+    private function salvaCliente(Cliente $c, mysqli_stmt $stmt) {
         $query = " update clienti set 
                     password = ?,
                     nome = ?,
@@ -321,7 +321,7 @@ class UserFactory {
                     email = ?,
                     numero_civico = ?,
                     citta = ?,
-                    via = ?
+                    via = ?,
                     numerotel = ?
                     where clienti.id = ?
                     ";
@@ -332,7 +332,7 @@ class UserFactory {
             return 0;
         }
 
-        if (!$stmt->bind_param('ssssisssi', $s->getPassword(), $s->getNome(), $s->getCognome(), $s->getEmail(), $s->getNumeroCivico(), $s->getCitta(), $s->getVia(), $s->getNumeroTel(), $s->getId())) {
+        if (!$stmt->bind_param('ssssisssi', $c->getPassword(), $c->getNome(), $c->getCognome(), $c->getEmail(), $c->getNumeroCivico(), $c->getCitta(), $c->getVia(), $c->getNumeroTel(), $c->getId())) {
             error_log("[salvaCliente] impossibile" .
                     " effettuare il binding in input");
             return 0;
@@ -353,17 +353,17 @@ class UserFactory {
      * @param mysqli_stmt $stmt un prepared statement
      * @return int il numero di righe modificate
      */
-    private function salvaDipendente(Docente $d, mysqli_stmt $stmt) {
+    private function salvaDipendente(Dipendente $d, mysqli_stmt $stmt) {
         $query = " update dipendenti set 
                     password = ?,
                     nome = ?,
                     cognome = ?,
                     email = ?,
+                    numero_civico = ?,
                     citta = ?,
                     via = ?,
-                    numero_civico = ?,
                     numerotel = ?
-                    where id = ?
+                    where dipendenti.id = ?
                     ";
         $stmt->prepare($query);
         if (!$stmt) {
@@ -372,7 +372,7 @@ class UserFactory {
             return 0;
         }
 
-        if (!$stmt->bind_param('ssssssisi', $d->getPassword(), $d->getNome(), $d->getCognome(), $d->getEmail(), $d->getCitta(), $d->getVia(), $d->getNumeroCivico(), $d->getNumeroTel(), $d->getId())) {
+       if (!$stmt->bind_param('ssssisssi', $d->getPassword(), $d->getNome(), $d->getCognome(), $d->getEmail(), $d->getNumeroCivico(), $d->getCitta(), $d->getVia(), $d->getNumeroTel(), $d->getId())) {
             error_log("[salvaDipendente] impossibile" .
                     " effettuare il binding in input");
             return 0;
@@ -399,10 +399,9 @@ class UserFactory {
                     " eseguire lo statement");
             return null;
         }
-
         $row = array();
         $bind = $stmt->bind_result(
-                $row['dipendenti_id'], $row['dipendenti_nome'], $row['dipendenti_cognome'], $row['dipendenti_email'], $row['dipendenti_numerotel'], $row['dipendenti_via'], $row['dipendenti_numero_civico'], $row['dipendenti_citta'],  $row['dipendenti_username'], $row['dipendenti_password']);
+                $row['dipendenti_id'], $row['dipendenti_nome'], $row['dipendenti_cognome'], $row['dipendenti_email'], $row['dipendenti_numerotel'], $row['dipendenti_via'], $row['dipendenti_numero_civico'], $row['dipendenti_citta'], $row['dipendenti_username'], $row['dipendenti_password']);
         if (!$bind) {
             error_log("[caricaDipendenteDaStmt] impossibile" .
                     " effettuare il binding in output");

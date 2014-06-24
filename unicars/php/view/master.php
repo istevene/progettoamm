@@ -25,14 +25,14 @@ if (!$vd->isJson()) {
         <body>
             <div id="page">
                 <header>
+                    <div id="header">
+                        <h1>UniCars</h1>
+                    </div>
                     <div id="top">
                         <?php
                         $logo = $vd->getLogoFile();
                         require "$logo";
                         ?>
-                                       </div>
-                    <div id="header">
-                        <h1>UniCars</h1>
                     </div>
                 </header>
 

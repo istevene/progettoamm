@@ -47,7 +47,6 @@ class DipendenteController extends BaseController {
 
                     // modifica dei dati anagrafici
                     case 'anagrafica':
-                        $dipartimenti = DipartimentoFactory::instance()->getDipartimenti();
                         $vd->setSottoPagina('anagrafica');
                         break;
 
@@ -200,41 +199,37 @@ class DipendenteController extends BaseController {
 
                         if (isset($request['insegnamento']) && ($request['insegnamento'] != '')) {
                             $insegnamento_id = filter_var($request['insegnamento'], FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
-                            if($insegnamento_id == null){
+                            if ($insegnamento_id == null) {
                                 $errori['insegnamento'] = "Specificare un identificatore valido";
                             }
                         } else {
                             $insegnamento_id = null;
-                            
                         }
 
                         if (isset($request['matricola']) && ($request['matricola'] != '')) {
                             $matricola = filter_var($request['matricola'], FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
-                            if($matricola == null){
+                            if ($matricola == null) {
                                 $errori['matricola'] = "Specificare una matricola valida";
                             }
                         } else {
                             $matricola = null;
-                            
                         }
 
                         if (isset($request['cognome'])) {
                             $cognome = $request['cognome'];
-                        }else{
+                        } else {
                             $cognome = null;
                         }
 
                         if (isset($request['nome'])) {
                             $nome = $request['nome'];
-                        }else{
+                        } else {
                             $nome = null;
                         }
 
-                        
+
                         $esami = EsameFactory::instance()->ricercaEsami(
-                                $user, 
-                                $insegnamento_id, 
-                                $matricola, $nome, $cognome);
+                                $user, $insegnamento_id, $matricola, $nome, $cognome);
 
                         break;
 
@@ -255,32 +250,24 @@ class DipendenteController extends BaseController {
                         $this->logout($vd);
                         break;
 
-                    // modifica delle informazioni sull'indirizzo dell'ufficio
-                    case 'ufficio':
+                    // cambio email
+                    case 'email':
+                        // in questo array inserisco i messaggi di 
+                        // cio' che non viene validato
                         $msg = array();
-                        if (isset($request['dipartimento'])) {
-                            $intVal = filter_var($request['dipartimento'], FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
-                            if (!isset($intVal) || $intVal < 0 || $intVal > count($dipartimenti)
-                                    || $user->setDipartimento($dipartimenti[$intVal])) {
-                                $msg[] = '<li>Il dipartimento specificato non &egrave; corretto</li>';
-                            }
-                        }
-                        $this->aggiornaIndirizzo($user, $request, $msg);
-                        $this->creaFeedbackUtente($msg, $vd, "Indirizzo ufficio aggiornato");
+                        $this->aggiornaEmail($user, $request, $msg);
+                        $this->creaFeedbackUtente($msg, $vd, "Email aggiornata");
                         $this->showHomeUtente($vd);
                         break;
+                    
+                    // aggiornamento indirizzo
+                    case 'indirizzo':
 
-                    // modifica delle informazioni di contatto
-                    case 'contatti':
+                        // in questo array inserisco i messaggi di 
+                        // cio' che non viene validato
                         $msg = array();
-                        if (isset($request['ricevimento'])) {
-                            if (!$user->setRicevimento($request['ricevimento'])) {
-                                $msg[] = '<li>Il ricevimento specificato non &egrave; corretto</li>';
-                            }
-                        }
-                        $this->aggiornaEmail($user, $request, $msg);
-
-                        $this->creaFeedbackUtente($msg, $vd, "Contatti aggiornati");
+                        $this->aggiornaIndirizzo($user, $request, $msg);
+                        $this->creaFeedbackUtente($msg, $vd, "Indirizzo aggiornato");
                         $this->showHomeUtente($vd);
                         break;
 

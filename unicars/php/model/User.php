@@ -76,6 +76,7 @@ class User {
      * @var string 
      */
     private $numeroTel;
+    
     private $id;
 
     /**
@@ -313,20 +314,15 @@ class User {
     public function getNumeroTel() {
         return $this->numeroTel;
     }
-    
-    
+
     /**
      * Imposta il numero di telefono dell'utente. 
      * @param string $telefono
      * @return boolean true in caso di aggiornamento corretto
      */
     public function setNumeroTel($telefono) {
-        $intVal = filter_var($telefono, FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
-        if (isset($intVal)) {
-            $this->numeroTel = $intVal;
-            return true;
-        }
-        return false;
+        $this->numeroTel = $telefono;
+        return true;
     }
 
     /**

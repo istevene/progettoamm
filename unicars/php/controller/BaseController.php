@@ -98,10 +98,9 @@ class BaseController {
         // mostro la home degli studenti
 
         $vd->setTitolo("UniCars - prenotazioni ");
-        $vd->setMenuFile(basename(__DIR__) . '/../view/studente/menu.php');
-        $vd->setLogoFile(basename(__DIR__) . '/../view/studente/logo.php');
-        $vd->setLeftBarFile(basename(__DIR__) . '/../view/studente/leftBar.php');
-        $vd->setContentFile(basename(__DIR__) . '/../view/studente/content.php');
+        $vd->setLogoFile(basename(__DIR__) . '/../view/cliente/logo.php');
+        $vd->setLeftBarFile(basename(__DIR__) . '/../view/cliente/leftBar.php');
+        $vd->setContentFile(basename(__DIR__) . '/../view/cliente/content.php');
     }
 
     /**
@@ -112,10 +111,9 @@ class BaseController {
     protected function showHomeDipendente($vd) {
         // mostro la home dei docenti
         $vd->setTitolo("UniCars - dipendenti ");
-        $vd->setMenuFile(basename(__DIR__) . '/../view/docente/menu.php');
-        $vd->setLogoFile(basename(__DIR__) . '/../view/docente/logo.php');
-        $vd->setLeftBarFile(basename(__DIR__) . '/../view/docente/leftBar.php');
-        $vd->setContentFile(basename(__DIR__) . '/../view/docente/content.php');
+        $vd->setLogoFile(basename(__DIR__) . '/../view/dipendente/logo.php');
+        $vd->setLeftBarFile(basename(__DIR__) . '/../view/dipendente/leftBar.php');
+        $vd->setContentFile(basename(__DIR__) . '/../view/dipendente/content.php');
     }
 
     /**
@@ -134,7 +132,6 @@ class BaseController {
                 break;
         }
     }
-
 
     /**
      * Procedura di autenticazione 
@@ -199,6 +196,13 @@ class BaseController {
             }
         }
 
+        if (isset($request['numero_tel'])) {
+            if (!$user->setNumeroTel($request['numero_tel'])) {
+                $msg[] = '<li>Il numero di telefono non &egrave; corretto</li>';
+            }
+        }
+
+
 
 
 
@@ -231,29 +235,7 @@ class BaseController {
             }
         }
     }
-    
-    /**
-     * Aggiorno il numero di telefono dell'utente
-     * @param User $user utente da aggiornare
-     * @param array $request richiesta http da gestire
-     * @param array $msg riferimento all'array degli eventuali messaggi d'errore
-     */
-    protected function aggiornaNumeroTel($user, &$request, &$msg) {
-        if (isset($request['numerotel'])) {
-            if (!$user->setNumeroTel($request['numerotel'])) {
-                $msg[] = '<li>Il numero di telefono specificato &egrave; corretta</li>';
-            }
-        }
 
-        // salviamo i dati se non ci sono stati errori
-        if (count($msg) == 0) {
-            if (UserFactory::instance()->salva($user) != 1) {
-                $msg[] = '<li>Salvataggio non riuscito</li>';
-            }
-        }
-    }
-    
-            
 
     /**
      * Aggiorno la password di un utente (comune a Studente e Docente)
@@ -280,8 +262,8 @@ class BaseController {
             }
         }
     }
-    
-        /**
+
+    /**
      * Crea un messaggio di feedback per l'utente 
      * @param array $msg lista di messaggi di errore
      * @param ViewDescriptor $vd il descrittore della pagina
@@ -303,7 +285,6 @@ class BaseController {
             $vd->setMessaggioConferma($okMsg);
         }
     }
-
 
 }
 

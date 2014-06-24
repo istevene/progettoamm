@@ -15,13 +15,18 @@ header {
 }
 
 #header{
-	background-image: url('../img/logo.jpg');
-	background-repeat: no-repeat;
-        background-position: center left;
-        height: 100px;
-        padding-left: 100px;
-        vertical-align: middle;
-        line-height: 100px;
+    background-image: url('../img/logo.jpg');
+    background-repeat: no-repeat;
+    background-position: center left;
+    height: 100px;
+    padding-left: 120px;
+    vertical-align: middle;
+    line-height: 100px;
+}
+
+#header h1{
+    font-size: 3em;
+    margin: 0px;
 }
 
 #sidebar1{
@@ -52,10 +57,10 @@ header {
     color: white;
     border-bottom-left-radius: 20px;
     border-bottom-right-radius: 20px;
-    
+
 }
 
-#footer a:link, a:visited{
+#footer a:link, footer a:visited{
     color: white;
     text-decoration: none;
 }
@@ -98,6 +103,10 @@ a:hover{
     margin: 10px;
 }
 
+#top {
+    height: 20px;
+}
+
 .input-form input[type="submit"], .input-form button {
     width: auto;
     margin-left: auto;
@@ -116,5 +125,17 @@ label {
 }
 
 .input-form {
-line-height: 3em;
+    line-height: 3em;
+}
+
+h2, h3{
+    color: #1c345a;
+}
+
+.logout a, .logout a:visited {
+    color: white;
+}
+
+a, a:visited {
+    color: #9e1616;
 }
