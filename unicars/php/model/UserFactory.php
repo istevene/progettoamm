@@ -3,6 +3,7 @@
 include_once 'User.php';
 include_once 'Dipendente.php';
 include_once 'Cliente.php';
+include_once 'Db.php';
 
 /**
  * Classe per la creazione degli utenti del sistema
@@ -65,31 +66,13 @@ class UserFactory {
 
         $cliente = self::caricaClienteDaStmt($stmt);
         if (isset($cliente)) {
-            // ho trovato uno studente
+            // ho trovato un cliente
             $mysqli->close();
             return $cliente;
         }
 
         // ora cerco un docente
-        $query = "select 
-               docenti.id docenti_id,
-               docenti.nome docenti_nome,
-               docenti.cognome docenti_cognome,
-               docenti.email docenti_email,
-               docenti.citta docenti_citta,
-               docenti.cap docenti_cap,
-               docenti.via docenti_via,
-               docenti.provincia docenti_provincia,
-               docenti.numero_civico docenti_numero_civico,
-               docenti.ricevimento docenti_ricevimento,
-               docenti.username docenti_username,
-               docenti.password docenti_password,
-               dipartimenti.id dipartimenti_id,
-               dipartimenti.nome dipartimenti_nome
-               
-               from docenti 
-               join dipartimenti on docenti.dipartimento_id = dipartimenti.id
-               where docenti.username = ? and docenti.password = ?";
+        $query = "select * from dipendenti where username = ? and password = ?";
 
         $stmt = $mysqli->stmt_init();
         $stmt->prepare($query);
@@ -107,7 +90,7 @@ class UserFactory {
             return null;
         }
 
-        $docente = self::caricaDocenteDaStmt($stmt);
+        $docente = self::caricaDipendenteDaStmt($stmt);
         if (isset($docente)) {
             // ho trovato un docente
             $mysqli->close();
@@ -189,12 +172,7 @@ class UserFactory {
         return $studenti;
     }
 
-    /**
-     * Cerca uno studente per id
-     * @param int $id
-     * @return Studente un oggetto Studente nel caso sia stato trovato,
-     * NULL altrimenti
-     */
+
     public function cercaUtentePerId($id, $role) {
         $intval = filter_var($id, FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
         if (!isset($intval)) {
@@ -209,7 +187,7 @@ class UserFactory {
 
         switch ($role) {
             case User::Cliente:
-                $query = "select * from clientin where id = ?";
+                $query = "select * from clienti where id = ?";
                 $stmt = $mysqli->stmt_init();
                 $stmt->prepare($query);
                 if (!$stmt) {
@@ -226,7 +204,7 @@ class UserFactory {
                     return null;
                 }
 
-                return self::caricaClienteeDaStmt($stmt);
+                return self::caricaClienteDaStmt($stmt);
                 break;
 
             case User::Dipendente:
@@ -258,12 +236,12 @@ class UserFactory {
     }
 
     /**
-     * Crea uno studente da una riga del db
+     * Crea un cliente da una riga del db
      * @param type $row
-     * @return \Studente
+     * @return \cliente
      */
     public function creaClienteDaArray($row) {
-        $cliente = new Studente();
+        $cliente = new Cliente();
         $cliente->setId($row['clienti_id']);
         $cliente->setNome($row['clienti_nome']);
         $cliente->setCognome($row['clienti_cognome']);
@@ -271,9 +249,9 @@ class UserFactory {
         $cliente->setVia($row['clienti_via']);
         $cliente->setEmail($row['clienti_email']);
         $cliente->setNumeroCivico($row['clienti_numero_civico']);
-        $cliente->setRuolo(User::Studente);
+        $cliente->setRuolo(User::Cliente);
         $cliente->setUsername($row['clienti_username']);
-        $cliente->setPassword($row['studenti_password']);
+        $cliente->setPassword($row['clienti_password']);
         $cliente->setNumeroTel($row['clienti_numerotel']);
 
         return $cliente;
@@ -330,8 +308,8 @@ class UserFactory {
     }
 
     /**
-     * Rende persistenti le modifiche all'anagrafica di uno studente sul db
-     * @param Studente $s lo studente considerato
+     * Rende persistenti le modifiche all'anagrafica di un cliente sul db
+     * @param Cliente $s il cliente considerato
      * @param mysqli_stmt $stmt un prepared statement
      * @return int il numero di righe modificate
      */
@@ -424,7 +402,7 @@ class UserFactory {
 
         $row = array();
         $bind = $stmt->bind_result(
-                $row['dipendenti_id'], $row['dipendenti_nome'], $row['dipendenti_cognome'], $row['dipendenti_email'], $row['clienti_numerotel'], $row['dipendenti_via'], $row['dipendenti_numero_civico'], $row['dipendenti_citta'],  $row['dipendenti_username'], $row['dipendenti_password']);
+                $row['dipendenti_id'], $row['dipendenti_nome'], $row['dipendenti_cognome'], $row['dipendenti_email'], $row['dipendenti_numerotel'], $row['dipendenti_via'], $row['dipendenti_numero_civico'], $row['dipendenti_citta'],  $row['dipendenti_username'], $row['dipendenti_password']);
         if (!$bind) {
             error_log("[caricaDipendenteDaStmt] impossibile" .
                     " effettuare il binding in output");
@@ -441,7 +419,7 @@ class UserFactory {
     }
 
     /**
-     * Carica uno studente eseguendo un prepared statement
+     * Carica un cliente eseguendo un prepared statement
      * @param mysqli_stmt $stmt
      * @return null
      */

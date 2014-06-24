@@ -3,7 +3,7 @@
 
 include_once 'controller/BaseController.php';
 include_once 'controller/ClienteController.php';
-include_once 'controller/DipendenteController.php';
+require_once 'controller/DipendenteController.php';
 
 date_default_timezone_set("Europe/Rome");
 // punto unico di accesso all'applicazione
@@ -34,7 +34,7 @@ class FrontController {
 
                 // cliente
                 case 'cliente':
-                    $controller = new StudenteController();
+                    $controller = new ClienteController();
                     if (isset($_SESSION[BaseController::role]) &&
                         $_SESSION[BaseController::role] != User::Cliente) {
                         self::write403();

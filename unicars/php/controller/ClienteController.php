@@ -1,8 +1,7 @@
 <?php
 
 include_once 'BaseController.php';
-include_once basename(__DIR__) . '/../model/EsameFactory.php';
-include_once basename(__DIR__) . '/../model/AppelloFactory.php';
+//include_once basename(__DIR__) . '/../model/PrenotazioneFactory.php';
 
 /**
  * Controller che gestisce la modifica dei dati dell'applicazione relativa agli 
@@ -10,7 +9,7 @@ include_once basename(__DIR__) . '/../model/AppelloFactory.php';
  *
  * @author Davide Spano
  */
-class StudenteController extends BaseController {
+class ClienteController extends BaseController {
 
     const appelli = 'appelli';
 
@@ -34,8 +33,6 @@ class StudenteController extends BaseController {
         // imposto la pagina
         $vd->setPagina($request['page']);
 
-        // imposto il token per impersonare un utente (nel lo stia facendo)
-        $this->setImpToken($vd, $request);
 
         // gestion dei comandi
         // tutte le variabili che vengono create senza essere utilizzate 
@@ -53,7 +50,7 @@ class StudenteController extends BaseController {
 
 
             // verifico quale sia la sottopagina della categoria
-            // Docente da servire ed imposto il descrittore 
+            // Cliente da servire ed imposto il descrittore 
             // della vista per caricare i "pezzi" delle pagine corretti
             // tutte le variabili che vengono create senza essere utilizzate 
             // direttamente in questo switch, sono quelle che vengono poi lette
@@ -67,17 +64,11 @@ class StudenteController extends BaseController {
                         break;
 
                     // visualizzazione degli esami sostenuti
-                    case 'esami':
-                        $esami = EsameFactory::instance()->esamiPerStudente($user);
-                        $vd->setSottoPagina('esami');
+                    case 'prenotazioni':
+                        $prenotazioni = PrenotazioneFactory::instance()->prenotazioniPerCliente($user);
+                        $vd->setSottoPagina('prenotazioni');
                         break;
 
-                    // iscrizione ad un appello
-                    case 'iscrizione':
-                        // carichiamo gli appelli dal db
-                        $appelli = AppelloFactory::instance()->getAppelliPerStudente($user);
-                        $vd->setSottoPagina('iscrizione');
-                        break;
                     default:
 
                         $vd->setSottoPagina('home');
@@ -128,14 +119,14 @@ class StudenteController extends BaseController {
                         $this->showHomeStudente($vd);
                         break;
 
-                    // iscrizione ad un appello
-                    case 'iscrivi':
+                    // prenota un veicolo
+                    case 'prenota':
                         // recuperiamo l'indice 
                         $msg = array();
-                        $a = $this->getAppelloPerIndice($appelli, $request, $msg);
+                        $v = $this->getVeicoloPerIndice($veicoli, $request, $msg);
                         if (isset($a)) {
-                            $isOk = $a->iscrivi($user);
-                            $count = AppelloFactory::instance()->aggiungiIscrizione($user, $a);
+                            $isOk = $v->prenota($user);
+                            $count = PrenotazioneFactory::instance()->aggiungiPrenotaziove($user, $v);
                             if (!$isOk || $count != 1) {
                                 $msg[] = "<li> Impossibile cancellarti dall'appello specificato </li>";
                             }
@@ -147,24 +138,7 @@ class StudenteController extends BaseController {
                         $this->showHomeStudente($vd);
                         break;
 
-                    // cancellazione da un appello
-                    case 'cancella':
-                        // recuperiamo l'indice 
-                        $msg = array();
-                        $a = $this->getAppelloPerIndice($appelli, $request, $msg);
-
-                        if (isset($a)) {
-                            $isOk = $a->cancella($user);
-                            $count = AppelloFactory::instance()->cancellaIscrizione($user, $a);
-                            if (!$isOk || $count != 1) {
-                                $msg[] = "<li> Impossibile cancellarti dall'appello specificato </li>";
-                            }
-                        } else {
-                            $msg[] = "<li> Impossibile cancellarti dall'appello specificato </li>";
-                        }
-                        $this->creaFeedbackUtente($msg, $vd, "Ti sei cancellato dall'appello specificato");
-                        $this->showHomeUtente($vd);
-                        break;
+                
                     default : $this->showLoginPage($vd);
                 }
             } else {
@@ -179,18 +153,18 @@ class StudenteController extends BaseController {
         require basename(__DIR__) . '/../view/master.php';
     }
 
-    private function getAppelloPerIndice(&$appelli, &$request, &$msg) {
-        if (isset($request['appello'])) {
-            // indice per l'appello definito, verifichiamo che sia un intero
-            $intVal = filter_var($request['appello'], FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
-            if (isset($intVal) && $intVal > -1 && $intVal < count($appelli)) {
-                return $appelli[$intVal];
+    private function getVeicoloPerIndice(&$veicoli, &$request, &$msg) {
+        if (isset($request['veicolo'])) {
+            // indice per il veicolo definito, verifichiamo che sia un intero
+            $intVal = filter_var($request['veicolo'], FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
+            if (isset($intVal) && $intVal > -1 && $intVal < count($veicoli)) {
+                return $veicoli[$intVal];
             } else {
-                $msg[] = "<li> L'appello specificato non esiste </li>";
+                $msg[] = "<li> Il veicolo specificato non esiste </li>";
                 return null;
             }
         } else {
-            $msg[] = '<li>Appello non specificato<li>';
+            $msg[] = '<li>Veicolo non specificato<li>';
             return null;
         }
     }

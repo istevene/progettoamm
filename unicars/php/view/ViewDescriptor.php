@@ -35,18 +35,6 @@ class ViewDescriptor {
     private $menu_file;
 
     /**
-     * File che include la definizione HTML della sidebar sinistra
-     * @var string 
-     */
-    private $leftBar_file;
-
-    /**
-     * File che include la definizione HTML della sidebar destra
-     * @var string 
-     */
-    private $rightBar_file;
-
-    /**
      * File che include la definizione HTML del contenuto principale
      * @var string 
      */
@@ -169,22 +157,6 @@ class ViewDescriptor {
      */
     public function setLeftBarFile($leftBar) {
         $this->leftBar_file = $leftBar;
-    }
-
-    /**
-     * Imposta il file che include la definizione HTML della sidebar destra
-     * @return string
-     */
-    public function getRightBarFile() {
-        return $this->rightBar_file;
-    }
-    
-    /**
-     * Imposta il path al file che include la definizione HTML della sidebar destra
-     * @param type $rightBar
-     */
-    public function setRightBarFile($rightBar) {
-        $this->rightBar_file = $rightBar;
     }
 
      /**
@@ -332,7 +304,7 @@ class ViewDescriptor {
      * hidden input in caso di form
      */
     public function scriviToken($pre = '', $method = self::get) {
-        $imp = BaseController::impersonato;
+        //$imp = BaseController::impersonato;
         switch ($method) {
             case self::get:
                 if (isset($this->impToken)) {

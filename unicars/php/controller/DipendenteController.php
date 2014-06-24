@@ -1,9 +1,6 @@
 <?php
 
 include_once 'BaseController.php';
-include_once basename(__DIR__) . '/../model/ElencoEsami.php';
-include_once basename(__DIR__) . '/../model/DipartimentoFactory.php';
-include_once basename(__DIR__) . '/../model/UserFactory.php';
 
 /**
  * Controller che gestisce la modifica dei dati dell'applicazione relativa ai 
@@ -11,7 +8,7 @@ include_once basename(__DIR__) . '/../model/UserFactory.php';
  *
  * @author Davide Spano
  */
-class DocenteController extends BaseController {
+class DipendenteController extends BaseController {
 
     const elenco = 'elenco';
 
@@ -30,9 +27,6 @@ class DocenteController extends BaseController {
 
         // imposto la pagina
         $vd->setPagina($request['page']);
-
-        // imposto il token per impersonare un utente (nel lo stia facendo)
-        $this->setImpToken($vd, $request);
 
         if (!$this->loggedIn()) {
             // utente non autenticato, rimando alla home

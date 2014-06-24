@@ -8,13 +8,12 @@ include_once basename(__DIR__) . '/../model/UserFactory.php';
  * Controller che gestisce gli utenti non autenticati, 
  * fornendo le funzionalita' comuni anche agli altri controller
  *
- * @author Davide Spano
+ * @author Stefano
  */
 class BaseController {
 
     const user = 'user';
     const role = 'role';
-    const impersonato = '_imp';
 
     /**
      * Costruttore
@@ -34,9 +33,6 @@ class BaseController {
 
         // imposto la pagina
         $vd->setPagina($request['page']);
-
-        // imposto il token per impersonare un utente (nel lo stia facendo)
-        $this->setImpToken($vd, $request);
 
         // gestion dei comandi
         // tutte le variabili che vengono create senza essere utilizzate 
@@ -87,11 +83,9 @@ class BaseController {
      */
     protected function showLoginPage($vd) {
         // mostro la pagina di login
-        $vd->setTitolo("esAMMi - login");
-        $vd->setMenuFile(basename(__DIR__) . '/../view/login/menu.php');
+        $vd->setTitolo("UniCars - login");
         $vd->setLogoFile(basename(__DIR__) . '/../view/login/logo.php');
         $vd->setLeftBarFile(basename(__DIR__) . '/../view/login/leftBar.php');
-        $vd->setRightBarFile(basename(__DIR__) . '/../view/login/rightBar.php');
         $vd->setContentFile(basename(__DIR__) . '/../view/login/content.php');
     }
 
@@ -100,14 +94,13 @@ class BaseController {
      * dello studente
      * @param ViewDescriptor $vd il descrittore della vista
      */
-    protected function showHomeStudente($vd) {
+    protected function showHomeCliente($vd) {
         // mostro la home degli studenti
 
-        $vd->setTitolo("esAMMi - gestione studente ");
+        $vd->setTitolo("UniCars - prenotazioni ");
         $vd->setMenuFile(basename(__DIR__) . '/../view/studente/menu.php');
         $vd->setLogoFile(basename(__DIR__) . '/../view/studente/logo.php');
         $vd->setLeftBarFile(basename(__DIR__) . '/../view/studente/leftBar.php');
-        $vd->setRightBarFile(basename(__DIR__) . '/../view/studente/rightBar.php');
         $vd->setContentFile(basename(__DIR__) . '/../view/studente/content.php');
     }
 
@@ -116,30 +109,13 @@ class BaseController {
      * del docente
      * @param ViewDescriptor $vd il descrittore della vista
      */
-    protected function showHomeDocente($vd) {
+    protected function showHomeDipendente($vd) {
         // mostro la home dei docenti
-        $vd->setTitolo("esAMMi - gestione docente ");
+        $vd->setTitolo("UniCars - dipendenti ");
         $vd->setMenuFile(basename(__DIR__) . '/../view/docente/menu.php');
         $vd->setLogoFile(basename(__DIR__) . '/../view/docente/logo.php');
         $vd->setLeftBarFile(basename(__DIR__) . '/../view/docente/leftBar.php');
-        $vd->setRightBarFile(basename(__DIR__) . '/../view/docente/rightBar.php');
         $vd->setContentFile(basename(__DIR__) . '/../view/docente/content.php');
-    }
-
-    /**
-     * Imposta la vista master.php per visualizzare la pagina di gestione
-     * dell'amministratore
-     * @param ViewDescriptor $vd il descrittore della vista
-     */
-    protected function showHomeAmministratore($vd) {
-        // mostro la home degli amministratori
-
-        $vd->setTitolo("esAMMi - Super User ");
-        $vd->setMenuFile(basename(__DIR__) . '/../view/amministratore/menu.php');
-        $vd->setLogoFile(basename(__DIR__) . '/../view/amministratore/logo.php');
-        $vd->setLeftBarFile(basename(__DIR__) . '/../view/amministratore/leftBar.php');
-        $vd->setRightBarFile(basename(__DIR__) . '/../view/amministratore/rightBar.php');
-        $vd->setContentFile(basename(__DIR__) . '/../view/amministratore/content.php');
     }
 
     /**
@@ -149,32 +125,16 @@ class BaseController {
     protected function showHomeUtente($vd) {
         $user = UserFactory::instance()->cercaUtentePerId($_SESSION[self::user], $_SESSION[self::role]);
         switch ($user->getRuolo()) {
-            case User::Studente:
-                $this->showHomeStudente($vd);
+            case User::Cliente:
+                $this->showHomeCliente($vd);
                 break;
 
-            case User::Docente:
-                $this->showHomeDocente($vd);
-                break;
-
-            case User::Amministratore:
-                $this->showHomeAmministratore($vd);
+            case User::Dipendente:
+                $this->showHomeDipendente($vd);
                 break;
         }
     }
 
-    /**
-     * Imposta la variabile del descrittore della vista legato 
-     * all'utente da impersonare nel caso sia stato specificato nella richiesta
-     * @param ViewDescriptor $vd il descrittore della vista
-     * @param array $request la richiesta
-     */
-    protected function setImpToken(ViewDescriptor $vd, &$request) {
-
-        if (array_key_exists('_imp', $request)) {
-            $vd->setImpToken($request['_imp']);
-        }
-    }
 
     /**
      * Procedura di autenticazione 
@@ -238,16 +198,9 @@ class BaseController {
                 $msg[] = '<li>La citt&agrave; specificata non &egrave; corretta</li>';
             }
         }
-        if (isset($request['provincia'])) {
-            if (!$user->setProvincia($request['provincia'])) {
-                $msg[] = '<li>La provincia specificata &egrave; corretta</li>';
-            }
-        }
-        if (isset($request['cap'])) {
-            if (!$user->setCap($request['cap'])) {
-                $msg[] = '<li>Il CAP specificato non &egrave; corretto</li>';
-            }
-        }
+
+
+
 
         // salviamo i dati se non ci sono stati errori
         if (count($msg) == 0) {
@@ -270,7 +223,7 @@ class BaseController {
                 $msg[] = '<li>L\'indirizzo email specificato non &egrave; corretto</li>';
             }
         }
-        
+
         // salviamo i dati se non ci sono stati errori
         if (count($msg) == 0) {
             if (UserFactory::instance()->salva($user) != 1) {
@@ -278,6 +231,29 @@ class BaseController {
             }
         }
     }
+    
+    /**
+     * Aggiorno il numero di telefono dell'utente
+     * @param User $user utente da aggiornare
+     * @param array $request richiesta http da gestire
+     * @param array $msg riferimento all'array degli eventuali messaggi d'errore
+     */
+    protected function aggiornaNumeroTel($user, &$request, &$msg) {
+        if (isset($request['numerotel'])) {
+            if (!$user->setNumeroTel($request['numerotel'])) {
+                $msg[] = '<li>Il numero di telefono specificato &egrave; corretta</li>';
+            }
+        }
+
+        // salviamo i dati se non ci sono stati errori
+        if (count($msg) == 0) {
+            if (UserFactory::instance()->salva($user) != 1) {
+                $msg[] = '<li>Salvataggio non riuscito</li>';
+            }
+        }
+    }
+    
+            
 
     /**
      * Aggiorno la password di un utente (comune a Studente e Docente)
@@ -296,7 +272,7 @@ class BaseController {
                 $msg[] = '<li>Le due password non coincidono</li>';
             }
         }
-        
+
         // salviamo i dati se non ci sono stati errori
         if (count($msg) == 0) {
             if (UserFactory::instance()->salva($user) != 1) {
@@ -304,8 +280,8 @@ class BaseController {
             }
         }
     }
-
-    /**
+    
+        /**
      * Crea un messaggio di feedback per l'utente 
      * @param array $msg lista di messaggi di errore
      * @param ViewDescriptor $vd il descrittore della pagina
@@ -327,6 +303,7 @@ class BaseController {
             $vd->setMessaggioConferma($okMsg);
         }
     }
+
 
 }
 

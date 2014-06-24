@@ -13,7 +13,7 @@ class Dipendente extends User {
     public function __construct() {
         // richiamiamo il costruttore della superclasse
         parent::__construct();
-        $this->setRuolo(User::Docente);
+        $this->setRuolo(User::Dipendente);
     }
 
 }
