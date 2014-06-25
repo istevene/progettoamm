@@ -32,7 +32,7 @@ header {
 #sidebar1{
     background-color: white;
     float: left;
-    width: 300px;    
+    width: 250px;    
     font-size: 13px;
 }
 
@@ -43,10 +43,12 @@ header {
 
 
 #content {
-    margin-left: 300px;
+    margin-left: 250px;
     margin-right: 50px;
     padding: 10px;
+    padding-left: 50px;
     min-height: 500px;
+    border-left: 1px solid #1c345a;
 }
 
 #footer{
