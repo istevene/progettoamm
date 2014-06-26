@@ -11,8 +11,6 @@ include_once 'BaseController.php';
  */
 class ClienteController extends BaseController {
 
-    const appelli = 'appelli';
-
     /**
      * Costruttore
      */
@@ -63,10 +61,10 @@ class ClienteController extends BaseController {
                         $vd->setSottoPagina('anagrafica');
                         break;
 
-                    // visualizzazione degli esami sostenuti
-                    case 'prenotazioni':
-                        $prenotazioni = PrenotazioneFactory::instance()->prenotazioniPerCliente($user);
-                        $vd->setSottoPagina('prenotazioni');
+                    // visualizzazione dei noleggi richiesti
+                    case 'noleggi':
+                        $noleggi = NoleggioFactory::instance()->noleggiPerCliente($user);
+                        $vd->setSottoPagina('noleggi');
                         break;
 
                     default:

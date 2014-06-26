@@ -60,7 +60,7 @@ switch ($vd->getSottoPagina()) {
         <ul class="panel">
             <li><a href="dipendente/anagrafica">Anagrafica</a></li>
             <li><a href="dipedente/auto">Parco auto</a></li>
-            <li><a href="dipendente/prenotazioni">Prenotazioni</a></li>
+            <li><a href="dipendente/noleggi">Noleggi</a></li>
         </ul>
         <?php
         break;

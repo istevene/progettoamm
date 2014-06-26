@@ -97,7 +97,7 @@ class BaseController {
     protected function showHomeCliente($vd) {
         // mostro la home degli studenti
 
-        $vd->setTitolo("UniCars - prenotazioni ");
+        $vd->setTitolo("UniCars - noleggi ");
         $vd->setLogoFile(basename(__DIR__) . '/../view/cliente/logo.php');
         $vd->setLeftBarFile(basename(__DIR__) . '/../view/cliente/leftBar.php');
         $vd->setContentFile(basename(__DIR__) . '/../view/cliente/content.php');

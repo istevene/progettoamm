@@ -4,8 +4,8 @@ switch ($vd->getSottoPagina()) {
         include_once 'anagrafica.php';
         break;
 
-    case 'prenotazioni':
-        include_once 'prenotazioni.php';
+    case 'noleggi':
+        include_once 'noleggi.php';
         break;
 
     default:
@@ -19,7 +19,8 @@ switch ($vd->getSottoPagina()) {
         </p>
         <ul class="panel">
             <li><a href="cliente/anagrafica">Anagrafica</a></li>
-            <li><a href="cliente/prenotazioni">Prenotazioni</a></li>
+            <li><a href="cliente/noleggi">Elenco Noleggi</a></li>
+            <li><a href="cliente/veicoli">Veicoli</a></li>            
         </ul>
         <?php
         break;
