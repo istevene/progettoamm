@@ -62,7 +62,7 @@ header {
 
 }
 
-#footer a:link, footer a:visited{
+#footer a:link, footer a:link:visited{
     color: white;
     text-decoration: none;
 }
