@@ -1,6 +1,9 @@
 <?php
 
 include_once 'BaseController.php';
+include_once basename(__DIR__) . '/../model/VeicoloFactory.php';
+include_once basename(__DIR__) . '/../model/UserFactory.php';
+include_once basename(__DIR__) . '/../model/Veicolo.php';
 
 /**
  * Controller che gestisce la modifica dei dati dell'applicazione relativa ai 
@@ -37,7 +40,7 @@ class DipendenteController extends BaseController {
                     $_SESSION[BaseController::user], $_SESSION[BaseController::role]);
 
             // verifico quale sia la sottopagina della categoria
-            // Docente da servire ed imposto il descrittore 
+            // Dipendete da servire ed imposto il descrittore 
             // della vista per caricare i "pezzi" delle pagine corretti
             // tutte le variabili che vengono create senza essere utilizzate 
             // direttamente in questo switch, sono quelle che vengono poi lette
@@ -49,6 +52,61 @@ class DipendenteController extends BaseController {
                     case 'anagrafica':
                         $vd->setSottoPagina('anagrafica');
                         break;
+                    
+                    //visualizza elenco noleggi
+                    case 'noleggi':
+                        $veicoli=  VeicoloFactory::instance()->getVeicoli();
+                        $clienti = UserFactory::instance()->getListaClienti();
+                        $vd->setSottoPagina('noleggi');
+ 
+                        $vd->addScript("../js/jquery-2.1.1.min.js");
+                        $vd->addScript("../js/elencoNoleggi.js");
+                        break;
+
+                    // gestione della richiesta ajax di filtro noleggi
+                    case 'filtra_noleggi':
+                        echo "ok";
+                        $vd->toggleJson();
+                        $vd->setSottoPagina('noleggi_json');
+                        $errori = array();
+
+                        if (isset($request['veicolo']) && ($request['veicolo'] != '')) {
+                            $veicolo_id = filter_var($request['veicolo'], FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
+                            if ($veicolo_id == null) {
+                                $errori['veicolo'] = "Specificare un identificatore valido";
+                            }
+                        } else {
+                            $insegnamento_id = null;
+                        }
+
+                        if (isset($request['cliente']) && ($request['cliente'] != '')) {
+                            $cliente_id = filter_var($request['cliente'], FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
+                            if ($cliente_id == null) {
+                                $errori['cliente'] = "Specificare una matricola valida";
+                            }
+                        } else {
+                            $cliente_id = null;
+                        }
+
+                        if (isset($request['datainizio'])) {
+                            $datainizio = $request['datainizio'];
+                        } else {
+                            $datainizio = null;
+                        }
+
+                        if (isset($request['datafine'])) {
+                            $datafine = $request['datafine'];
+                        } else {
+                            $datafine = null;
+                        }
+
+
+                        $noleggi = NoleggioFactory::instance()->ricercaNoleggi(
+                                $user, $veicolo_id, $cliente_id, $datainizio, $datafine);
+                        
+
+                        break;
+                        
 
                     // inserimento di una lista di appelli
                     case 'appelli':
@@ -61,7 +119,7 @@ class DipendenteController extends BaseController {
                     case 'appelli_modifica':
                         $msg = array();
                         $appelli = AppelloFactory::instance()->getAppelliPerDocente($user);
-                        $mod_appello = $this->getAppello($request, $msg);
+                        $mod_appello = $this->getAppello($request . " " . $msg);
                         $insegnamenti = InsegnamentoFactory::instance()->getListaInsegnamentiPerDocente($user);
                         if (!isset($mod_appello)) {
                             $vd->setSottoPagina('appelli');
@@ -566,12 +624,7 @@ class DipendenteController extends BaseController {
                         $this->showHomeUtente($vd);
                         break;
 
-                    // ricerca di un esame
-                    case 'e_cerca':
-                        $msg = array();
-                        $this->creaFeedbackUtente($msg, $vd, "Lo implementiamo con il db, fai conto che abbia funzionato ;)");
-                        $this->showHomeUtente($vd);
-                        break;
+                    
 
                     // default
                     default:

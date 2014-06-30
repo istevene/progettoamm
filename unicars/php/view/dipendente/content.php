@@ -4,47 +4,12 @@ switch ($vd->getSottoPagina()) {
         include 'anagrafica.php';
         break;
 
-    case 'appelli':
-        include 'appelli.php';
+    case 'noleggi':
+        include 'noleggi.php';
         break;
     
-    case 'appelli_modifica':
-        include 'appelli.php';
-        include 'appelli_modifica.php';
-        break;
-    
-    case 'appelli_crea':
-        include 'appelli.php';
-        include 'appelli_crea.php';
-        break;
-    
-    case 'appelli_iscritti':
-        include 'appelli.php';
-        include 'appelli_iscritti.php';
-        break;
-    
-    case 'reg_esami':
-        include 'reg_esami.php';
-        break;
-    
-    case 'reg_esami_step1':
-        include 'reg_esami_step1.php';
-        break;
-    
-    case 'reg_esami_step2':
-        include 'reg_esami_step2.php';
-        break;
-    
-     case 'reg_esami_step3':
-        include 'reg_esami_step3.php';
-        break;
-    
-    case 'el_esami':
-        include 'el_esami.php';
-        break;
-    
-    case 'el_esami_json':
-        include 'el_esami_json.php';
+    case 'noleggi_json':
+        include 'noleggi_json.php';
         break;
         ?>
         

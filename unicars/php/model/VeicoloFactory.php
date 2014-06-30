@@ -68,8 +68,11 @@ class VeicoloFactory {
         $id = 0;
         $idmodello = 0;
         $anno = 0;
+        $targa = "";
 
-        if (!$stmt->bind_result($id, $idmodello, $anno)) {
+
+
+        if (!$stmt->bind_result($id, $idmodello, $anno, $targa)) {
             error_log("[inizializzaListaVeicoli] impossibile" .
                     " effettuare il binding in output");
             return array();
@@ -77,8 +80,9 @@ class VeicoloFactory {
         while ($stmt->fetch()) {
             $veicolo = new Veicolo();
             $veicolo->setId($id);
-            $veicolo->setModello(ModelloFactory::instance()->getModelloPerId($idmodello));
+            $veicolo->setModello(ModelloFactory::instance()->getModelloPerId($id));
             $veicolo->setAnno($anno);
+            $veicolo->setTarga($targa);
             $veicolo->setPrenotabile(NoleggioFactory::instance()->isVeicoloPrenotabile($id));
             $veicoli[] = $veicolo;
         }

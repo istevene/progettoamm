@@ -19,7 +19,7 @@ class ModelloFactory {
      */
     public static function instance() {
         if (!isset(self::$singleton)) {
-            self::$singleton = new CostruttoreFactory();
+            self::$singleton = new ModelloFactory();
         }
 
         return self::$singleton;

@@ -6,7 +6,7 @@
  * @author Stefano
  */
 class Veicolo {
-    
+
     /**
      * Modello del veicolo
      * @var Modello
@@ -18,13 +18,19 @@ class Veicolo {
      * @var int
      */
     private $anno;
-    
+
     /**
      * Flag che memorizza se la macchina è prenotabile
-     * (non attualmente prenotata
+     * (non attualmente prenotata)
      * @var boolean
      */
     private $prenotabile;
+
+    /**
+     * Targa del veicolo
+     * @var String 
+     */
+    private $targa;
 
     /**
      * Costruttore
@@ -32,7 +38,7 @@ class Veicolo {
     public function __costruct() {
         
     }
-    
+
     /**
      * Restituisce un identificatore unico per il veicolo
      * @return int
@@ -54,8 +60,6 @@ class Veicolo {
         }
         $this->id = $intVal;
     }
-    
-     
 
     public function setAnno($anno) {
         $intVal = filter_var($anno, FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
@@ -67,33 +71,39 @@ class Veicolo {
         }
         return false;
     }
-    
-    public function getAnno(){
+
+    public function getAnno() {
         return $this->anno;
     }
-    
+
     public function setPrenotabile($flag) {
         $bool = filter_var($flag, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
-        if (isset($bool)) {            
-                $this->prenotabile = $bool;
-                return true;            
+        if (isset($bool)) {
+            $this->prenotabile = $bool;
+            return true;
         }
         return false;
     }
-    
-    public function isPrenotabile(){
+
+    public function isPrenotabile() {
         return $this->prenotabile;
     }
-    
-    public function setModello($modello){
+
+    public function setModello($modello) {
         $this->modello = $modello;
     }
-    
-    public function getModello(){
+
+    public function getModello() {
         return $this->modello;
     }
-    
-    
+
+    public function getTarga() {
+        return $this->targa;
+    }
+
+    public function setTarga($targa) {
+        $this->targa = $targa;
+    }
 
 }
 

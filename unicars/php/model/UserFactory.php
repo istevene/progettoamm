@@ -147,29 +147,39 @@ class UserFactory {
      * Restituisce la lista degli studenti presenti nel sistema
      * @return array
      */
-    public function &getListaStudenti() {
-        $studenti = array();
-        $query = "select * from studenti " .
-                "join CdL on cdl_id = CdL.id" .
-                "join dipartimenti on CdL.dipartimento_id = dipartimenti.id";
+    public function &getListaClienti() {
+        $clienti = array();
+        $query = "SELECT 
+            id as clienti_id,
+            nome as clienti_nome,
+            cognome as clienti_cognome,
+            citta as clienti_citta,
+            via as clienti_via,
+            email as clienti_email,
+            numero_civico as clienti_numero_civico,
+            username as clienti_username,
+            password as clienti_password,
+            numerotel as clienti_numerotel 
+            FROM `clienti` ";
+        
         $mysqli = Db::getInstance()->connectDb();
         if (!isset($mysqli)) {
-            error_log("[getListaStudenti] impossibile inizializzare il database");
+            error_log("[getListaClienti] impossibile inizializzare il database");
             $mysqli->close();
-            return $studenti;
+            return $clienti;
         }
         $result = $mysqli->query($query);
         if ($mysqli->errno > 0) {
-            error_log("[getListaStudenti] impossibile eseguire la query");
+            error_log("[getListaClienti] impossibile eseguire la query");
             $mysqli->close();
-            return $studenti;
+            return $clienti;
         }
 
         while ($row = $result->fetch_array()) {
-            $studenti[] = self::creaStudenteDaArray($row);
+            $clienti[] = self::creaClienteDaArray($row);
         }
 
-        return $studenti;
+        return $clienti;
     }
 
     public function cercaUtentePerId($id, $role) {

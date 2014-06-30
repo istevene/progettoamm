@@ -14,7 +14,7 @@ class NoleggioFactory {
      */
     public static function instance() {
         if (!isset(self::$singleton)) {
-            self::$singleton = new CostruttoreFactory();
+            self::$singleton = new NoleggioFactory();
         }
 
         return self::$singleton;
@@ -27,7 +27,7 @@ class NoleggioFactory {
      */
     public function isVeicoloPrenotabile($id) {
         $prenotabile = false;
-        $query = "SELECT * FROM `noleggi' WHERE `idauto` = ? LIMIT 0 , 1";
+        $query = "SELECT * FROM noleggi WHERE `idauto` = ? LIMIT 0 , 1";
         $mysqli = Db::getInstance()->connectDb();
         if (!isset($mysqli)) {
             error_log("[isVeicoloPrenotabile] impossibile inizializzare il database");
@@ -70,7 +70,7 @@ class NoleggioFactory {
             return false;
         }
         while ($stmt->fetch()) {
-            if(strtotime($now)>  strtotime($datafine)){
+            if(strtotime("now")>  strtotime($datafine)){
                 $prenotabile = true;
             }
         }
