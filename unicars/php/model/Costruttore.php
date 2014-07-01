@@ -29,7 +29,7 @@ class Costruttore {
     }
     
     public function getNome(){
-        return $nome;
+        return $this->nome;
     }
 }
 

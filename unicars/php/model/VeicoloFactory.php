@@ -89,6 +89,16 @@ class VeicoloFactory {
         return $veicoli;
     }
 
+    public function creaVeicoloDaArray($row) {
+        $veicolo = new Veicolo();
+        $veicolo->setId($row['veicoli_id']);
+        $veicolo->setModello(ModelloFactory::instance()->getModelloPerId($row['veicoli_id']));
+        $veicolo->setAnno($row['veicoli_anno']);
+        $veicolo->setTarga($row['veicoli_targa']);
+        $veicolo->setPrenotabile(NoleggioFactory::instance()->isVeicoloPrenotabile($row['veicoli_id']));
+        return $veicolo;
+    }
+
 }
 
 ?>

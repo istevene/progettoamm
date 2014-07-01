@@ -65,7 +65,6 @@ class DipendenteController extends BaseController {
 
                     // gestione della richiesta ajax di filtro noleggi
                     case 'filtra_noleggi':
-                        echo "ok";
                         $vd->toggleJson();
                         $vd->setSottoPagina('noleggi_json');
                         $errori = array();
@@ -76,7 +75,7 @@ class DipendenteController extends BaseController {
                                 $errori['veicolo'] = "Specificare un identificatore valido";
                             }
                         } else {
-                            $insegnamento_id = null;
+                            $veicolo_id = null;
                         }
 
                         if (isset($request['cliente']) && ($request['cliente'] != '')) {

@@ -6,7 +6,7 @@
 </div>
 <div class="input-form">
     <h3>Filtro</h3>
-    <form method="post" action="dipendente/noleggi">
+    <form method="get" action="dipendente/noleggi">
         <label for="veicolo">Veicolo</label>
         <select name="veicolo" id="veicolo">
             <option value="">Qualsiasi</option>

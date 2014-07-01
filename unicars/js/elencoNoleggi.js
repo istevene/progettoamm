@@ -31,6 +31,7 @@ $(document).ready(function () {
                     // nessun errore
                     $(".error").hide();
                     if(data['noleggi'].length === 0){
+                        
                         // mostro il messaggio per nessun elemento
                         $("#nessuno").show();
                        
