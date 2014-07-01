@@ -80,7 +80,7 @@ class VeicoloFactory {
         while ($stmt->fetch()) {
             $veicolo = new Veicolo();
             $veicolo->setId($id);
-            $veicolo->setModello(ModelloFactory::instance()->getModelloPerId($id));
+            $veicolo->setModello(ModelloFactory::instance()->getModelloPerId($idmodello));
             $veicolo->setAnno($anno);
             $veicolo->setTarga($targa);
             $veicolo->setPrenotabile(NoleggioFactory::instance()->isVeicoloPrenotabile($id));
@@ -92,12 +92,88 @@ class VeicoloFactory {
     public function creaVeicoloDaArray($row) {
         $veicolo = new Veicolo();
         $veicolo->setId($row['veicoli_id']);
-        $veicolo->setModello(ModelloFactory::instance()->getModelloPerId($row['veicoli_id']));
+        $veicolo->setModello(ModelloFactory::instance()->getModelloPerId($row['veicoli_idmodello']));
         $veicolo->setAnno($row['veicoli_anno']);
         $veicolo->setTarga($row['veicoli_targa']);
         $veicolo->setPrenotabile(NoleggioFactory::instance()->isVeicoloPrenotabile($row['veicoli_id']));
         return $veicolo;
     }
+
+    public function nuovo($veicolo) {
+        $query = "insert into veicoli (idmodello, anno, targa)
+                  values (?, ?, ?)";
+
+        $mysqli = Db::getInstance()->connectDb();
+        if (!isset($mysqli)) {
+            error_log("[nuovo] impossibile inizializzare il database");
+            return 0;
+        }
+
+        $stmt = $mysqli->stmt_init();
+
+        $stmt->prepare($query);
+        if (!$stmt) {
+            error_log("[nuovo] impossibile" .
+                    " inizializzare il prepared statement");
+            $mysqli->close();
+            return 0;
+        }
+
+        if (!$stmt->bind_param('iis', $veicolo->getModello()->getId(), $veicolo->getAnno(), $veicolo->getTarga())){
+        error_log("[nuovo] impossibile" .
+                " effettuare il binding in input");
+        $mysqli->close();
+        return 0;
+        }
+
+        if (!$stmt->execute()) {
+            error_log("[nuovo] impossibile" .
+                    " eseguire lo statement");
+            $mysqli->close();
+            return 0;
+        }
+
+        $mysqli->close();
+        return $stmt->affected_rows;
+    }
+    
+    public function cancellaPerId($id) {
+        $query = "delete from veicoli where id = ?";
+
+        $mysqli = Db::getInstance()->connectDb();
+        if (!isset($mysqli)) {
+            error_log("[cancellaPerId] impossibile inizializzare il database");
+            return 0;
+        }
+
+        $stmt = $mysqli->stmt_init();
+
+        $stmt->prepare($query);
+        if (!$stmt) {
+            error_log("[cancellaPerId] impossibile" .
+                    " inizializzare il prepared statement");
+            $mysqli->close();
+            return 0;
+        }
+
+        if (!$stmt->bind_param('i', $id)){
+        error_log("[cancellaPerId] impossibile" .
+                " effettuare il binding in input");
+        $mysqli->close();
+        return 0;
+        }
+
+        if (!$stmt->execute()) {
+            error_log("[cancellaPerId] impossibile" .
+                    " eseguire lo statement");
+            $mysqli->close();
+            return 0;
+        }
+
+        $mysqli->close();
+        return $stmt->affected_rows;
+    }
+    
 
 }
 

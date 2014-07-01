@@ -52,13 +52,13 @@ class DipendenteController extends BaseController {
                     case 'anagrafica':
                         $vd->setSottoPagina('anagrafica');
                         break;
-                    
+
                     //visualizza elenco noleggi
                     case 'noleggi':
-                        $veicoli=  VeicoloFactory::instance()->getVeicoli();
+                        $veicoli = VeicoloFactory::instance()->getVeicoli();
                         $clienti = UserFactory::instance()->getListaClienti();
                         $vd->setSottoPagina('noleggi');
- 
+
                         $vd->addScript("../js/jquery-2.1.1.min.js");
                         $vd->addScript("../js/elencoNoleggi.js");
                         break;
@@ -102,10 +102,15 @@ class DipendenteController extends BaseController {
 
                         $noleggi = NoleggioFactory::instance()->ricercaNoleggi(
                                 $user, $veicolo_id, $cliente_id, $datainizio, $datafine);
-                        
+
 
                         break;
-                        
+
+                    //visualizzazione del parco auto
+                    case 'auto':
+                        $veicoli = VeicoloFactory::instance()->getVeicoli();
+                        $vd->setSottoPagina('parco_auto');
+                        break;
 
                     // inserimento di una lista di appelli
                     case 'appelli':
@@ -113,6 +118,7 @@ class DipendenteController extends BaseController {
                         $insegnamenti = InsegnamentoFactory::instance()->getListaInsegnamentiPerDocente($user);
                         $vd->setSottoPagina('appelli');
                         break;
+
 
                     // modifica di un appello
                     case 'appelli_modifica':
@@ -316,7 +322,7 @@ class DipendenteController extends BaseController {
                         $this->creaFeedbackUtente($msg, $vd, "Email aggiornata");
                         $this->showHomeUtente($vd);
                         break;
-                    
+
                     // aggiornamento indirizzo
                     case 'indirizzo':
 
@@ -336,295 +342,71 @@ class DipendenteController extends BaseController {
                         $this->showHomeUtente($vd);
                         break;
 
-                    // richiesta modifica di un appello esistente,
-                    // dobbiamo mostrare le informazioni
-                    case 'a_modifica':
-                        $appelli = AppelloFactory::instance()->getAppelliPerDocente($user);
-                        if (isset($request['appello'])) {
-                            $intVal = filter_var($request['appello'], FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
-                            if (isset($intVal)) {
-                                $mod_appello = $this->cercaAppelloPerId($intVal, $appelli);
-                                $insegnamenti = InsegnamentoFactory::instance()->getListaInsegnamentiPerDocente($user);
-                                //$vd->setStato('a_modifica');
-                            }
-                        }
-                        $this->showHomeUtente($vd);
-                        break;
-
-                    // salvataggio delle modifiche ad un appello esistente
-                    case 'a_salva':
-                        $msg = array();
-                        if (isset($request['appello'])) {
-                            $intVal = filter_var($request['appello'], FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
-                            if (isset($intVal)) {
-                                $mod_appello = $this->cercaAppelloPerId($intVal, $appelli);
-                                $this->updateAppello($mod_appello, $request, $msg);
-                                if (count($msg) == 0 && AppelloFactory::instance()->salva($mod_appello) != 1) {
-                                    $msg[] = '<li> Impossibile salvare l\'appello </li>';
-                                }
-                                $this->creaFeedbackUtente($msg, $vd, "Appello aggiornato");
-                                if (count($msg) == 0) {
-                                    $vd->setSottoPagina('appelli');
-                                }
-                            }
-                        } else {
-                            $msg[] = '<li> Appello non specificato </li>';
-                        }
-                        $this->showHomeUtente($vd);
-                        break;
 
                     // l'utente non vuole modificare l'appello selezionato
-                    case 'a_annulla':
-                        $vd->setSottoPagina('appelli');
+                    case 'veicoli_annulla':
+                        $vd->setSottoPagina('parco_auto');
                         $this->showHomeUtente($vd);
                         break;
 
-                    // richesta di visualizzazione del form per la creazione di un nuovo
-                    // appello
-                    case 'a_crea':
-                        $appelli = AppelloFactory::instance()->getAppelliPerDocente($user);
-                        $vd->setSottoPagina('appelli_crea');
+
+                    //form per la creazione di un veicolo
+                    case 'new_veicolo':
+                        $modelli = ModelloFactory::instance()->getModelli();
+                        $vd->setSottoPagina('crea_veicolo');
                         $this->showHomeUtente($vd);
                         break;
 
-                    // creazione di un nuovo appello
-                    case 'a_nuovo':
+                    // creazione di un nuovo veicolo
+                    case 'veicolo_nuovo':
+                        $vd->setSottoPagina('parco_auto');
                         $msg = array();
-                        $nuovo = new Appello();
+                        $nuovo = new Veicolo();
                         $nuovo->setId(-1);
-                        $this->updateAppello($nuovo, $request, $msg);
-                        $this->creaFeedbackUtente($msg, $vd, "Appello creato");
+                        $nuovo->setModello(ModelloFactory::instance()->getModelloPerId($request['modello']));
+
+                        if ($request['anno'] != "") {
+                            $nuovo->setAnno($request['anno']);
+                        } else {
+                            $msg[] = '<li> Inserire un anno valido </li>';
+                        }
+                        if ($request['targa'] != "") {
+                            $nuovo->setTarga($request['targa']);
+                        } else {
+                            $msg[] = '<li> Inserire una targa valido </li>';
+                        }
+
                         if (count($msg) == 0) {
-                            $vd->setSottoPagina('appelli');
-                            if (AppelloFactory::instance()->nuovo($nuovo) != 1) {
-                                $msg[] = '<li> Impossibile creare l\'appello </li>';
+                            $vd->setSottoPagina('parco_auto');
+                            if (VeicoloFactory::instance()->nuovo($nuovo) != 1) {
+                                $msg[] = '<li> Impossibile creare il veicolo </li>';
                             }
                         }
-                        $appelli = AppelloFactory::instance()->getAppelliPerDocente($user);
+                        
+                        $this->creaFeedbackUtente($msg, $vd, "Veicolo creato");
+                        
+                        $veicoli = VeicoloFactory::instance()->getVeicoli();
                         $this->showHomeUtente($vd);
                         break;
 
-                    // mostra la lista degli iscritti
-                    case 'a_iscritti':
-                        $appelli = AppelloFactory::instance()->getAppelliPerDocente($user);
-                        if (isset($request['appello'])) {
-                            $intVal = filter_var($request['appello'], FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
+                    // cancella un veicolo
+                    case 'cancella_veicolo':
+                        if (isset($request['veicolo'])) {
+                            $intVal = filter_var($request['veicolo'], FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
                             if (isset($intVal)) {
-                                $mod_appello = $this->cercaAppelloPerId($intVal, $appelli);
-                            }
-                        }
-                        $this->showHomeUtente($vd);
-                        break;
 
-                    // cancella un appello
-                    case 'a_cancella':
-                        if (isset($request['appello'])) {
-                            $intVal = filter_var($request['appello'], FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
-                            if (isset($intVal)) {
-                                $mod_appello = AppelloFactory::instance()->cercaAppelloPerId($intVal);
-                                if ($mod_appello != null) {
-                                    if (AppelloFactory::instance()->cancella($mod_appello) != 1) {
-                                        $msg[] = '<li> Impossibile cancellare l\'appello </li>';
-                                    }
+                                if (VeicoloFactory::instance()->cancellaPerId($intVal) != 1) {
+                                    $msg[] = '<li> Impossibile cancellare il veicolo </li>';
                                 }
 
-                                $this->creaFeedbackUtente($msg, $vd, "Appello eliminato");
+
+                                $this->creaFeedbackUtente($msg, $vd, "Veicolo eliminato");
                             }
                         }
-                        $appelli = AppelloFactory::instance()->getAppelliPerDocente($user);
+                        $veicoli = VeicoloFactory::instance()->getVeicoli();
                         $this->showHomeUtente($vd);
                         break;
-
-                    // richiesta di creazione di un nuovo elenco di esami
-                    case 'r_nuovo':
-                        $elenco_id = $this->prossimoIndiceElencoListe($_SESSION[self::elenco]);
-                        // salviamo gli oggetti interi in sessione
-                        $el = new ElencoEsami($elenco_id);
-                        $el->getTemplate()->setData(new DateTime());
-                        $_SESSION[self::elenco][$elenco_id] = $el;
-                        $elenchi_attivi = $_SESSION[self::elenco];
-
-                        $this->showHomeUtente($vd);
-                        break;
-
-                    // selezione dell'insegnamento
-                    case 'r_sel_insegnamento':
-                        if (isset($elenco_id)) {
-                            $commissione = $_SESSION[self::elenco][$elenco_id]->getTemplate()->getCommissione();
-                            // richiesta di andare al passo successivo
-                            if (!isset($request['insegnamento'])) {
-                                $msg[] = "<li> Non &egrave; stato selezionato un insegnamento</li>";
-                            } else {
-                                $insegnamento = InsegnamentoFactory::instance()->creaInsegnamentoDaCodice($request['insegnamento']);
-                                if (!isset($insegnamento)) {
-                                    $msg[] = "<li> L'insegnamento specificato non &egrave; corretto</li>";
-                                }
-                            }
-                            if (count($msg) == 0) {
-                                // nessun errore, impostiamo l'insegnamento
-                                $_SESSION[self::elenco][$elenco_id]->getTemplate()->setInsegnamento($insegnamento);
-                                $sel_insegnamento = $_SESSION[self::elenco][$elenco_id]->getTemplate()->getInsegnamento();
-                                $vd->setSottoPagina('reg_esami_step2');
-                            } else {
-                                $vd->setSottoPagina('reg_esami_step1');
-                            }
-                            $this->creaFeedbackUtente($msg, $vd, "Insegnamento selezionato");
-                        }
-                        $this->showHomeUtente($vd);
-                        break;
-
-                    // aggiunta di un membro della  commissione
-                    case 'r_add_commissione':
-                        if (isset($elenco_id)) {
-                            // richiesta di aggiungere un nuovo membro
-                            $index = filter_var($request['nuovo-membro'], FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
-                            if (isset($index) &&
-                                    ($new_docente = UserFactory::instance()->cercaUtentePerId($index, User::Docente)) != null) {
-                                // docente trovato
-                                // aggiungiamo il docente alla lista
-                                if (!$_SESSION[self::elenco][$elenco_id]->getTemplate()->aggiungiMembroCommissione($new_docente)) {
-                                    $msg[] = '<li>Il docente specificato &egrave; gi&agrave; in lista </li>';
-                                } else {
-                                    // copiamo la nuova commissione nella variabile della vista
-                                    $commissione = $_SESSION[self::elenco][$elenco_id]->getTemplate()->getCommissione();
-                                }
-                            } else {
-                                // docente non trovato
-                                $msg[] = '<li>Impossibile trovare il  docente specificato </li>';
-                            }
-                            $this->creaFeedbackUtente($msg, $vd, "Membro aggiunto in commissione");
-                        }
-                        $this->showHomeUtente($vd);
-                        break;
-
-
-                    // rimozione di un membro della commissione
-                    case 'r_del_commissione':
-                        if (isset($elenco_id)) {
-                            $index = filter_var($request['index'], FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
-                            if (isset($index) && $index >= 0 && $index < count($commissione)) {
-                                $old_docente = $_SESSION[self::elenco][$elenco_id]->getTemplate()->getCommissione()[$index];
-                                if (!$_SESSION[self::elenco][$elenco_id]->getTemplate()->rimuoviMembroCommissione($old_docente)) {
-                                    $msg[] = '<li>Il docente specificato non &egrave; in lista </li>';
-                                } else {
-                                    // copiamo la nuova commissione nella variabile della vista
-                                    $commissione = $_SESSION[self::elenco][$elenco_id]->getTemplate()->getCommissione();
-                                }
-                            } else {
-                                $msg[] = '<li>Impossibile trovare il membro specificato </li>';
-                            }
-                        }
-                        $this->creaFeedbackUtente($msg, $vd, "Membro rimosso dalla commissione");
-                        $this->showHomeUtente($vd);
-                        break;
-
-
-                    // salvataggio della commissione per l'elenco
-                    case 'r_save_commissione':
-                        if (isset($elenco_id)) {
-                            if (!$_SESSION[self::elenco][$elenco_id]->getTemplate()->commissioneValida()) {
-                                $msg[] = '<li>Ci devono essere almeno due membri in commissione</li>';
-                            }
-                            $this->creaFeedbackUtente($msg, $vd, "Commissione inserita correttamente");
-                            if (count($msg) > 0) {
-                                $vd->setSottoPagina('reg_esami_step2');
-                            }
-                        }
-                        $this->showHomeUtente($vd);
-                        break;
-
-                    // aggiunta di uno statino
-                    case 'r_add_esame':
-                        if (isset($elenco_id)) {
-                            $new_esame = new Esame();
-                            $new_esame->setInsegnamento($_SESSION[self::elenco][$elenco_id]->getTemplate()->getInsegnamento());
-                            $new_esame->setCommissione($_SESSION[self::elenco][$elenco_id]->getTemplate()->getCommissione());
-                            // aggiungiamo un esame alla lista
-                            if (isset($request['matricola'])) {
-                                $studente = UserFactory::instance()->cercaStudentePerMatricola($request['matricola']);
-                                if (!isset($studente)) {
-                                    $msg[] = '<li>La matricola specificata non &egrave; associata ad uno studente</li>';
-                                } else {
-                                    // impostiamo lo studente
-                                    $new_esame->setStudente($studente);
-                                }
-                            } else {
-                                $msg[] = '<li>Specificare una matricola</li>';
-                            }
-
-                            if (isset($request['voto'])) {
-                                if (!$new_esame->setVoto($request['voto'])) {
-                                    $msg[] = '<li>Il voto specificato non &egrave; corretto</li>';
-                                }
-                            } else {
-                                $msg[] = '<li>Specificare un voto </li>';
-                            }
-
-                            if (count($msg) == 0
-                                    && !$_SESSION[self::elenco][$elenco_id]->aggiungiEsame($new_esame)) {
-                                // esame duplicato
-                                $msg[] = '<li>Lo statino specificato &egrave; gi&agrave; presente in elenco </li>';
-                            } else {
-                                // facciamo una copia aggiornata dell'elenco esami per la vista
-                                $sel_esami = $_SESSION[self::elenco][$elenco_id]->getEsami();
-                            }
-                            $this->creaFeedbackUtente($msg, $vd, "Statino inserito in elenco");
-                        }
-                        $this->showHomeUtente($vd);
-                        break;
-
-                    // rimozione di uno statino
-                    case 'r_del_esame':
-                        if (isset($elenco_id)) {
-                            $index = filter_var($request['index'], FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
-                            if (isset($index) && $index >= 0 && $index < count($sel_esami)) {
-                                $old_statino = $_SESSION[self::elenco][$elenco_id]->getEsami()[$index];
-                                if (!$_SESSION[self::elenco][$elenco_id]->rimuoviEsame($old_statino)) {
-                                    $msg[] = '<li>L\'esame specificato non &egrave; in lista </li>';
-                                } else {
-                                    // facciamo una copia aggiornata dell'elenco esami per la vista
-                                    $sel_esami = $_SESSION[self::elenco][$elenco_id]->getEsami();
-                                }
-                            } else {
-                                $msg[] = '<li>Impossibile trovare lo statino specificato </li>';
-                            }
-                            $this->creaFeedbackUtente($msg, $vd, "Statino eliminato correttamente");
-                        }
-                        $this->showHomeUtente($vd);
-                        break;
-
-                    // salvataggio permanente dell'elenco
-                    case 'r_salva_elenco':
-                        if (isset($elenco_id)) {
-                            if (count($_SESSION[self::elenco][$elenco_id]->getEsami()) > 0) {
-                                if (!EsameFactory::instance()->salvaElenco($_SESSION[self::elenco][$elenco_id])) {
-                                    $msg[] = '<li> Impossibile salvare l\'elenco</li>';
-                                } else {
-                                    unset($_SESSION[self::elenco][$elenco_id]);
-                                    $elenchi_attivi = $_SESSION[self::elenco];
-                                    $vd->setPagina("reg_esami");
-                                    $vd->setSottoPagina('reg_esami');
-                                }
-                            } else {
-                                $msg[] = '<li> &Egrave; necessario inserire almeno un esame</li>';
-                            }
-                            $this->creaFeedbackUtente($msg, $vd, "Esami registrati correttamente");
-                        }
-                        $this->showHomeUtente($vd);
-                        break;
-
-                    // cancellazione di un elenco
-                    case 'r_del_elenco':
-                        if (isset($elenco_id) && array_key_exists($elenco_id, $_SESSION[self::elenco])) {
-                            unset($_SESSION[self::elenco][$elenco_id]);
-                            $this->creaFeedbackUtente($msg, $vd, "Elenco cancellato");
-                            $elenchi_attivi = $_SESSION[self::elenco];
-                        }
-                        $this->showHomeUtente($vd);
-                        break;
-
-                    
-
+               
                     // default
                     default:
                         $this->showHomeUtente($vd);
