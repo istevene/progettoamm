@@ -83,7 +83,7 @@ class VeicoloFactory {
             $veicolo->setModello(ModelloFactory::instance()->getModelloPerId($idmodello));
             $veicolo->setAnno($anno);
             $veicolo->setTarga($targa);
-            $veicolo->setPrenotabile(NoleggioFactory::instance()->isVeicoloPrenotabile($id));
+            $veicolo->setPrenotabile(NoleggioFactory::instance()->isVeicoloPrenotabile($id, "now"));
             $veicoli[] = $veicolo;
         }
         return $veicoli;
@@ -95,7 +95,7 @@ class VeicoloFactory {
         $veicolo->setModello(ModelloFactory::instance()->getModelloPerId($row['veicoli_idmodello']));
         $veicolo->setAnno($row['veicoli_anno']);
         $veicolo->setTarga($row['veicoli_targa']);
-        $veicolo->setPrenotabile(NoleggioFactory::instance()->isVeicoloPrenotabile($row['veicoli_id']));
+        $veicolo->setPrenotabile(NoleggioFactory::instance()->isVeicoloPrenotabile($row['veicoli_id'], "now"));
         return $veicolo;
     }
 
@@ -174,7 +174,61 @@ class VeicoloFactory {
         return $stmt->affected_rows;
     }
     
+    public function &getVeicoloPerId($id){
+        $veicolo = new Veicolo();
+        $query = "select * from veicoli where id = ?";
+        $mysqli = Db::getInstance()->connectDb();
+        if (!isset($mysqli)) {
+            error_log("[getVeicoloPerId] impossibile inizializzare il database");
+            $mysqli->close();
+            return $veicolo;
+        }
 
+
+        $stmt = $mysqli->stmt_init();
+        $stmt->prepare($query);
+        if (!$stmt) {
+            error_log("[getVeicoloPerId] impossibile" .
+                    " inizializzare il prepared statement");
+            $mysqli->close();
+            return $veicolo;
+        }
+
+        if (!$stmt->bind_param('i', $id)) {
+            error_log("[getVeicoloPerId] impossibile" .
+                    " effettuare il binding in input");
+            $mysqli->close();
+            return $veicolo;
+        }
+
+        if (!$stmt->execute()) {
+            error_log("[getVeicoloPerId] impossibile" .
+                    " eseguire lo statement");
+            return $veicolo;
+        }
+
+        $id = 0;
+        $idmodello = 0;
+        $anno = 0;
+        $targa = "";
+
+        if (!$stmt->bind_result($id, $idmodello, $anno, $targa)) {
+            error_log("[getVeicoloPerId] impossibile" .
+                    " effettuare il binding in output");
+            return $veicolo;
+        }
+        while ($stmt->fetch()) {
+            $veicolo->setId($id);
+            $veicolo->setAnno($anno);
+            $veicolo->setTarga($targa);
+            $veicolo->setModello(ModelloFactory::instance()->getModelloPerId($idmodello));
+            $veicolo->setPrenotabile(NoleggioFactory::instance()->isVeicoloPrenotabile($id, "now"));
+          }
+
+
+        $mysqli->close();
+        return $veicolo;
+    }
 }
 
 ?>

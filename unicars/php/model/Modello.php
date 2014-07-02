@@ -33,6 +33,12 @@ class Modello {
     private $potenza;
     
     /**
+     * Prezzo giornaliero 
+     * @var double
+     */
+    private $prezzo;
+    
+    /**
      * Restituisce un identificatore unico per il modello
      * @return int
      */
@@ -97,6 +103,16 @@ class Modello {
     public function getPotenza() {
         return $this->potenza;
     }
+    
+    public function getPrezzo() {
+        return $this->prezzo;
+    }
+
+    public function setPrezzo($prezzo) {
+        $this->prezzo = $prezzo;
+    }
+
+
 }
 
 ?>

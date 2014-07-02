@@ -29,9 +29,16 @@ class NoleggioFactory {
      * @param int $id Identificatore del veicolo
      * @return \Boolean true se il veicolo è prenotabile
      */
-    public function isVeicoloPrenotabile($id) {
-        $prenotabile = false;
-        $query = "SELECT * FROM noleggi WHERE `idauto` = ? LIMIT 0 , 1";
+    public function isVeicoloPrenotabile($id, $data) {
+        $prenotabile = true;
+
+        //calcolo il timestamp della data passata riferendolo alla mezzanotte del giorno
+        if ($data == "now") {
+            $data = strtotime("now");
+        }
+        $data = $data - $data % 86400;
+
+        $query = "SELECT * FROM noleggi WHERE `idauto` = ?";
         $mysqli = Db::getInstance()->connectDb();
         if (!isset($mysqli)) {
             error_log("[isVeicoloPrenotabile] impossibile inizializzare il database");
@@ -67,20 +74,21 @@ class NoleggioFactory {
         $idcliente = 0;
         $datainizio = "";
         $datafine = "";
+        $costo = 0;
 
-        if (!$stmt->bind_result($id, $idauto, $idcliente, $datainizio, $datafine)) {
+        if (!$stmt->bind_result($id, $idauto, $idcliente, $datainizio, $datafine, $costo)) {
             error_log("[isVeicoloPrenotabile] impossibile" .
                     " effettuare il binding in output");
             return false;
         }
-        while ($stmt->fetch()) {
-            if (strtotime("now") > strtotime($datafine)) {
-                $prenotabile = true;
+        while ($stmt->fetch() && $prenotabile) {
+            if ($data >= strtotime($datainizio) && $data <= strtotime($datafine)) {
+                $prenotabile = false;
             }
         }
 
-
         $mysqli->close();
+
         return $prenotabile;
     }
 
@@ -206,14 +214,7 @@ class NoleggioFactory {
 
         $row = array();
         $bind = $stmt->bind_result(
-                $row['noleggi_id'], $row['noleggi_idauto'], $row['noleggi_idcliente'], $row['noleggi_datainizio'], $row['noleggi_datafine'], $row['clienti_id'], $row['clienti_nome'], $row['clienti_cognome'], $row['clienti_email'], $row['clienti_numerotel'], $row['clienti_via'], $row['clienti_numero_civico'], $row['clienti_citta'], $row['clienti_username'], $row['clienti_password'], $row['veicoli_id'], $row['veicoli_idmodello'], $row['veicoli_anno'], $row['veicoli_targa']/* , 
-                  $row['modelli_id'],
-                  $row['modelli_nomemodello'],
-                  $row['modelli_idcostruttore'],
-                  $row['modelli_cilindrata'],
-                  $row['modelli_potenza'],
-                  $row['costruttori_id'],
-                  $row['costruttori_nomecostruttore'] */);
+                $row['noleggi_id'], $row['noleggi_idauto'], $row['noleggi_idcliente'], $row['noleggi_datainizio'], $row['noleggi_datafine'], $row['noleggi_costo'], $row['clienti_id'], $row['clienti_nome'], $row['clienti_cognome'], $row['clienti_email'], $row['clienti_numerotel'], $row['clienti_via'], $row['clienti_numero_civico'], $row['clienti_citta'], $row['clienti_username'], $row['clienti_password'], $row['veicoli_id'], $row['veicoli_idmodello'], $row['veicoli_anno'], $row['veicoli_targa']);
 
         if (!$bind) {
             error_log("[caricaNoleggiDaStmt] impossibile" .
@@ -237,7 +238,46 @@ class NoleggioFactory {
         $noleggio->setVeicolo(VeicoloFactory::instance()->creaVeicoloDaArray($row));
         $noleggio->setDatainizio($row['noleggi_datainizio']);
         $noleggio->setDatafine($row['noleggi_datafine']);
+        $noleggio->setCosto($row['noleggi_costo']);
         return $noleggio;
+    }
+
+    public function nuovo($noleggio) {
+        $query = "insert into noleggi (idauto, idcliente, datainizio, datafine, costo)
+                  values (?, ?, ?, ?, ?)";
+
+        $mysqli = Db::getInstance()->connectDb();
+        if (!isset($mysqli)) {
+            error_log("[nuovo] impossibile inizializzare il database");
+            return 0;
+        }
+
+        $stmt = $mysqli->stmt_init();
+
+        $stmt->prepare($query);
+        if (!$stmt) {
+            error_log("[nuovo] impossibile" .
+                    " inizializzare il prepared statement");
+            $mysqli->close();
+            return 0;
+        }
+
+        if (!$stmt->bind_param('iissd', $noleggio->getVeicolo()->getId(), $noleggio->getCliente()->getId(), $noleggio->getDatainizio(), $noleggio->getDatafine(), $noleggio->getCosto())) {
+            error_log("[nuovo] impossibile" .
+                    " effettuare il binding in input");
+            $mysqli->close();
+            return 0;
+        }
+
+        if (!$stmt->execute()) {
+            error_log("[nuovo] impossibile" .
+                    " eseguire lo statement");
+            $mysqli->close();
+            return 0;
+        }
+
+        $mysqli->close();
+        return $stmt->affected_rows;
     }
 
 }

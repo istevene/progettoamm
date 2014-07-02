@@ -3,7 +3,7 @@
 $json = array();
 $json['errori'] = $errori;
 $json['noleggi'] = array();
-foreach($noleggi as $noleggio){
+foreach ($noleggi as $noleggio) {
 
     $element = array();
     $element['cliente'] = $noleggio->getCliente()->getNome() . " " . $noleggio->getCliente()->getCognome();
@@ -11,9 +11,9 @@ foreach($noleggi as $noleggio){
     $element['targa'] = $noleggio->getVeicolo()->getTarga();
     $element['datainizio'] = $noleggio->getDatainizio();
     $element['datafine'] = $noleggio->getDatafine();
+    $element['costo'] = $noleggio->getCosto();
 
     $json['noleggi'][] = $element;
-    
 }
 echo json_encode($json);
 ?>

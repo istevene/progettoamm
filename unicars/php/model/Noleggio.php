@@ -22,6 +22,8 @@ class Noleggio {
     
     private $datafine;
     
+    private $costo;
+   
     public function getId() {
         return $this->id;
     }
@@ -34,16 +36,16 @@ class Noleggio {
         return $this->cliente;
     }
 
-    public function setCliente($cliente) {
-        $this->cliente = $cliente;
+    public function setCliente($idCliente) {
+        $this->cliente = $idCliente;
     }
 
     public function getVeicolo() {
         return $this->veicolo;
     }
 
-    public function setVeicolo($veicolo) {
-        $this->veicolo = $veicolo;
+    public function setVeicolo($idVeicolo) {
+        $this->veicolo = $idVeicolo;
     }
 
     public function getDatainizio() {
@@ -61,6 +63,15 @@ class Noleggio {
     public function setDatafine($datafine) {
         $this->datafine = $datafine;
     }
+
+    public function getCosto() {
+        return $this->costo;
+    }
+
+    public function setCosto($costo) {
+        $this->costo = $costo;
+    }
+
 
 
     

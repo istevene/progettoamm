@@ -47,16 +47,10 @@
             <th>Targa</th>
             <th>Data inizio</th>
             <th>Data fine</th>
+            <th>Costo</th>
         </tr>
     </thead>
     <tbody>
-            <tr >
-            <td> insegnamento 1</td>
-            <td> cfu </td>
-            <td> matricola </td>
-            <td> Cognome Nome</td>
-            <td> Voto</td>
 
-        </tr>
     </tbody>
 </table>

@@ -19,6 +19,14 @@ class ClienteController extends BaseController {
     }
 
     /**
+     * Restituisce il timestamp odierno, calcolato a mezzanotte
+     * @return int
+     */
+    private static function oggi() {
+        return strtotime("now") - strtotime("now") % 86400;
+    }
+
+    /**
      * Metodo per gestire l'input dell'utente. 
      * @param type $request la richiesta da gestire
      */
@@ -44,7 +52,7 @@ class ClienteController extends BaseController {
         } else {
             // utente autenticato
             $user = UserFactory::instance()->cercaUtentePerId(
-                            $_SESSION[BaseController::user], $_SESSION[BaseController::role]);
+                    $_SESSION[BaseController::user], $_SESSION[BaseController::role]);
 
 
             // verifico quale sia la sottopagina della categoria
@@ -65,6 +73,13 @@ class ClienteController extends BaseController {
                     case 'noleggi':
                         $noleggi = NoleggioFactory::instance()->noleggiPerCliente($user);
                         $vd->setSottoPagina('noleggi');
+                        break;
+
+                    //visualizzazione del parco auto
+                    case 'veicoli':
+                        $veicoli = VeicoloFactory::instance()->getVeicoli();
+                        //print_r($veicoli);
+                        $vd->setSottoPagina('parco_auto');
                         break;
 
                     default:
@@ -114,35 +129,86 @@ class ClienteController extends BaseController {
                         $msg = array();
                         $this->aggiornaPassword($user, $request, $msg);
                         $this->creaFeedbackUtente($msg, $vd, "Password aggiornata");
-                        $this->showHomeStudente($vd);
+                        $this->showHomeCliente($vd);
                         break;
 
-                    // prenota un veicolo
+                    //form per la prenotazione di un veicolo
                     case 'prenota':
-                        // recuperiamo l'indice 
+                        $idveicolo = filter_var($request['veicolo'], FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
+                        if (isset($idveicolo)) {
+
+                            $vd->setSottoPagina('prenotazione');
+                        }
+                        $this->showHomeCliente($vd);
+                        break;
+
+                    //creazione di una nuova prenotazione
+                    case 'nuova_prenotazione':
+                        $vd->setSottoPagina('parco_auto');
                         $msg = array();
-                        $v = $this->getVeicoloPerIndice($veicoli, $request, $msg);
-                        if (isset($a)) {
-                            $isOk = $v->prenota($user);
-                            $count = PrenotazioneFactory::instance()->aggiungiPrenotaziove($user, $v);
-                            if (!$isOk || $count != 1) {
-                                $msg[] = "<li> Impossibile cancellarti dall'appello specificato </li>";
+                        $nuova = new Noleggio();
+
+                        $nuova->setVeicolo(VeicoloFactory::instance()->getVeicoloPerId($request['idveicolo']));
+                        $nuova->setCliente($user);
+                        $datainizio = DateTime::createFromFormat("Y-m-d", ($request['datainizio']));
+                        $datafine = DateTime::createFromFormat("Y-m-d", ($request['datafine']));
+
+                        if ($datainizio) {
+                            if ($datainizio->getTimeStamp() >= $this->oggi()) {
+                                $nuova->setDatainizio($request['datainizio']);
+                            } else {
+                                $msg[] = '<li> Inserire una data di inizio valida </li>';
                             }
                         } else {
-                            $msg[] = "<li> Impossibile iscriverti all'appello specificato. Verifica la capienza del corso </li>";
+                            $msg[] = '<li> Inserire una data di inizio valida </li>';
                         }
 
-                        $this->creaFeedbackUtente($msg, $vd, "Ti sei iscritto all'appello specificato");
-                        $this->showHomeStudente($vd);
+                        if ($datafine) {
+                            if ($datafine->getTimeStamp() >= $this->oggi()) {
+                                $nuova->setDatafine($request['datafine']);
+                            } else {
+                                $msg[] = '<li> Inserire una data di inizio valida </li>';
+                            }
+                        } else {
+                            $msg[] = '<li> Inserire una data di fine valida </li>';
+                        }
+
+                        $costo = (($datafine->getTimeStamp() - $datainizio->getTimeStamp()) / 86400 + 1 ) * $nuova->getVeicolo()->getModello()->getPrezzo();
+                        $nuova->setCosto($costo);
+
+                        //controllo che il veicolo sia libero tutti i giorni della prenotazione
+                        if (count($msg) == 0) {
+                            $flag = true;
+                            $iteratore = $datainizio->getTimeStamp();
+                            $fine = $datafine->getTimeStamp();
+                            while ($iteratore <= $fine && $flag) {
+                                    //$msg[] = '<li>Iteratore '.$iteratore.'</li>';
+                                    if (!NoleggioFactory::instance()->isVeicoloPrenotabile($request['idveicolo'], $iteratore)) {
+                                    $msg[] = '<li> Il veicolo non è prenotabile per tutto l\'intervallo scelto</li>';
+                                    $flag = false;
+                                }
+                                $iteratore += 86400;
+                            }
+                        }
+
+                        if (count($msg) == 0) {
+                            if (NoleggioFactory::instance()->nuovo($nuova) != 1) {
+                                $msg[] = '<li> Impossibile creare la prenotazione </li>';
+                            }
+                        }
+
+                        $this->creaFeedbackUtente($msg, $vd, "Prenotazione aggiunta");
+                        $veicoli = VeicoloFactory::instance()->getVeicoli();
+                        $this->showHomeUtente($vd);
                         break;
 
-                
+
                     default : $this->showLoginPage($vd);
                 }
             } else {
                 // nessun comando
                 $user = UserFactory::instance()->cercaUtentePerId(
-                                $_SESSION[BaseController::user], $_SESSION[BaseController::role]);
+                        $_SESSION[BaseController::user], $_SESSION[BaseController::role]);
                 $this->showHomeUtente($vd);
             }
         }

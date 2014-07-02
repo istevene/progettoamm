@@ -55,6 +55,7 @@ $(document).ready(function () {
                                        <td>a</td>\n\
                                        <td>a</td>\n\
                                        <td>a</td>\n\
+                                       <td>a</td>\n\
                                        <td>a</td>\n\\n\
                                         </tr>");
                             if(i%2 == 0){
@@ -67,6 +68,7 @@ $(document).ready(function () {
                             $(colonne[2]).text(esame['targa']);
                             $(colonne[3]).text(esame['datainizio']);
                             $(colonne[4]).text(esame['datafine']);
+                            $(colonne[5]).text(esame['costo'] + " €");
 
                             i++;
                             

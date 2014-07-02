@@ -63,8 +63,9 @@ class ModelloFactory {
         $idcostruttore = 0;
         $cilindrata = 0;
         $potenza = 0;
+        $prezzo = 0;
 
-        if (!$stmt->bind_result($id, $nomemodello, $idcostruttore, $cilindrata, $potenza)) {
+        if (!$stmt->bind_result($id, $nomemodello, $idcostruttore, $cilindrata, $potenza, $prezzo)) {
             error_log("[getModelloPerId] impossibile" .
                     " effettuare il binding in output");
             return $modello;
@@ -75,6 +76,7 @@ class ModelloFactory {
             $modello->setCostruttore(CostruttoreFactory::instance()->getCostruttorePerId($idcostruttore));
             $modello->setCilindrata($cilindrata);
             $modello->setPotenza($potenza);
+            $modello->setPrezzo($prezzo);
         }
 
 
@@ -123,6 +125,7 @@ class ModelloFactory {
         $modello->setCostruttore(CostruttoreFactory::instance()->getCostruttorePerId($row['idcostruttore']));
         $modello->setCilindrata($row['cilindrata']);
         $modello->setPotenza($row['potenza']);
+        $modello->setPrezzo($row['prezzo']);
         return $modello;
     }
 

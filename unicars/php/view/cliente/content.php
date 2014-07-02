@@ -7,6 +7,14 @@ switch ($vd->getSottoPagina()) {
     case 'noleggi':
         include_once 'noleggi.php';
         break;
+    
+    case 'parco_auto':
+        include_once 'parco_auto.php';
+        break;
+    
+    case 'prenotazione':
+        include_once 'prenotazione.php';
+        break;
 
     default:
         ?>
