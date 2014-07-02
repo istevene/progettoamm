@@ -82,7 +82,14 @@ class NoleggioFactory {
             return false;
         }
         while ($stmt->fetch() && $prenotabile) {
-            if ($data >= strtotime($datainizio) && $data <= strtotime($datafine)) {
+            
+            //converto le date in timestamp ed estraggo il giorno
+            $datainizio = DateTime::createFromFormat("Y-m-d", "$datainizio")->getTimeStamp();
+            $datainizio -= $datainizio % 86400;
+            $datafine = DateTime::createFromFormat("Y-m-d", "$datafine")->getTimeStamp();
+            $datafine -= $datafine % 86400;
+
+            if ($data >= $datainizio && $data <= $datafine) {
                 $prenotabile = false;
             }
         }
@@ -269,12 +276,20 @@ class NoleggioFactory {
             return 0;
         }
 
+        // inizio la transazione
+        $mysqli->autocommit(false);
+
         if (!$stmt->execute()) {
             error_log("[nuovo] impossibile" .
                     " eseguire lo statement");
+            $mysqli->rollback();
             $mysqli->close();
             return 0;
         }
+
+        //query eseguita correttamente, termino la transazione
+        $mysqli->commit();
+        $mysqli->autocommit(true);
 
         $mysqli->close();
         return $stmt->affected_rows;
