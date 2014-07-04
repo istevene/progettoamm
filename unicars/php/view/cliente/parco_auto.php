@@ -12,24 +12,18 @@
         <th>Prenota</th>        
     </tr>
     <?
-    foreach($veicoli as $veicolo){
-    ?>
-    <tr>
-        <td><?= $veicolo->getModello()->getCostruttore()->getNome()?></td>
-        <td><?= $veicolo->getModello()->getNome() ?></td>
-        <td><?= $veicolo->getTarga() ?></td>
-        <td><?= $veicolo->getAnno()?></td>
-        <td><?= $veicolo->getModello()->getPotenza() . " cv"?></td>        
-        <td><?= $veicolo->getModello()->getCilindrata() . " cm<sup>3</sup>"?></td>
-        <td><?= $veicolo->getModello()->getPrezzo() . " €/giorno"?></td>
-        <?
-        if($veicolo->isPrenotabile()){
-            echo '<td><a href="cliente/veicoli?cmd=prenota&veicolo='.$veicolo->getId().'" title="Prenota il veicolo">
-            <img src="../img/prenota.png" alt="Prenota"></a></td>';
-        } else {
-            echo '<td><img src="../img/x.png" alt="Non disponile"></td>';
-        }
+    foreach ($veicoli as $veicolo) {
         ?>
+        <tr>
+            <td><?= $veicolo->getModello()->getCostruttore()->getNome() ?></td>
+            <td><?= $veicolo->getModello()->getNome() ?></td>
+            <td><?= $veicolo->getTarga() ?></td>
+            <td><?= $veicolo->getAnno() ?></td>
+            <td><?= $veicolo->getModello()->getPotenza() . " cv" ?></td>        
+            <td><?= $veicolo->getModello()->getCilindrata() . " cm<sup>3</sup>" ?></td>
+            <td><?= $veicolo->getModello()->getPrezzo() . " €/giorno" ?></td>
+            <td><a href="cliente/veicoli?cmd=prenota&veicolo=<?= $veicolo->getId() ?>" title="Prenota il veicolo">
+                    <img src="../img/prenota.png" alt="Prenota"></a></td>
         </tr>
     <? } ?>
 </table>

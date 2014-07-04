@@ -82,7 +82,7 @@ class NoleggioFactory {
             return false;
         }
         while ($stmt->fetch() && $prenotabile) {
-            
+
             //converto le date in timestamp ed estraggo il giorno
             $datainizio = DateTime::createFromFormat("Y-m-d", "$datainizio")->getTimeStamp();
             $datainizio -= $datainizio % 86400;
@@ -293,6 +293,47 @@ class NoleggioFactory {
 
         $mysqli->close();
         return $stmt->affected_rows;
+    }
+
+    public function &noleggiPerCliente($user) {
+        $noleggi = array();
+
+        $query = "SELECT * 
+                FROM noleggi
+                JOIN clienti ON idcliente = clienti.id
+                JOIN veicoli ON idauto = veicoli.id
+                WHERE noleggi.idcliente = ?";
+
+
+        $mysqli = Db::getInstance()->connectDb();
+        if (!isset($mysqli)) {
+            error_log("[noleggiPerCliente] impossibile inizializzare il database");
+            $mysqli->close();
+            return $noleggi;
+        }
+
+        $stmt = $mysqli->stmt_init();
+        $stmt->prepare($query);
+        if (!$stmt) {
+            error_log("[noleggiPerCliente] impossibile" .
+                    " inizializzare il prepared statement");
+            $mysqli->close();
+            return $noleggi;
+        }
+
+
+        if (!$stmt->bind_param("i", $user->getId())) {
+            error_log("[noleggiPerCliente] impossibile" .
+                    " effettuare il binding in input");
+            $mysqli->close();
+            return $noleggi;
+        }
+
+
+        $noleggi = self::caricaNoleggiDaStmt($stmt);
+
+        $mysqli->close();
+        return $noleggi;
     }
 
 }
