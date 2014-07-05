@@ -1,4 +1,4 @@
-<h2 class="icon-title">Docente</h2>
+<h2 class="icon-title">Dipendente</h2>
 <ul>
     <li class="<?= $vd->getSottoPagina() == 'home' || $vd->getSottoPagina() == null ? 'current_page_item' : ''?>"><a href="dipendente/home">Home</a></li>
     <li class="<?= $vd->getSottoPagina() == 'anagrafica' ? 'current_page_item' : '' ?>"><a href="dipendente/anagrafica">Anagrafica</a></li>

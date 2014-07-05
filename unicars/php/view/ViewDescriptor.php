@@ -51,23 +51,19 @@ class ViewDescriptor {
      * @var string 
      */
     private $messaggioConferma;
-    
+
     /**
      * Pagina della vista corrente 
-     * (le funzionalita' sono divise in tre categorie: 
-     * amministratore, studente e docente, corrispondenti alle sottocartelle 
-     * di view nel progetto)
      * @var string 
      */
     private $pagina;
+
     /**
      * Sottopagina della vista corrente (una per funzionalita' da supportare)
-     * (le funzionalita' sono divise in tre categorie: 
-     * amministratore, studente e docente, corrispondenti alle sottocartelle 
-     * di view nel progetto)
      * @var string 
      */
     private $sottoPagina;
+
     /**
      * Variabile utilizzata in modalita' amministratore per impersonare 
      * degli utenti (vedere metodo setImpToken)
@@ -80,13 +76,13 @@ class ViewDescriptor {
      * @var array
      */
     private $js;
-    
+
     /**
      * flag per dati json (non scrive html)
      * @var boolean
      */
     private $json;
-    
+
     /**
      * Costruttore
      */
@@ -159,7 +155,7 @@ class ViewDescriptor {
         $this->leftBar_file = $leftBar;
     }
 
-     /**
+    /**
      * Imposta il file che include la definizione HTML del contenuto principale
      * @return string
      */
@@ -174,7 +170,7 @@ class ViewDescriptor {
     public function getContentFile() {
         return $this->content_file;
     }
-    
+
     /**
      * Restituisce il testo del messaggio di errore
      * @return string
@@ -183,7 +179,7 @@ class ViewDescriptor {
         return $this->messaggioErrore;
     }
 
-      /**
+    /**
      * Imposta un messaggio di errore
      * @return string
      */
@@ -238,89 +234,36 @@ class ViewDescriptor {
     public function setPagina($pagina) {
         $this->pagina = $pagina;
     }
-    
+
     /**
      * Aggiunge uno script alla pagina
      * @param String $nome
      */
-    public function addScript($nome){
+    public function addScript($nome) {
         $this->js[] = $nome;
     }
-    
+
     /**
      * Restituisce la lista di script
      * @return array
      */
-    public function &getScripts(){
+    public function &getScripts() {
         return $this->js;
     }
-    
+
     /**
      * True se si devono scrivere dati json, false altrimenti
      * @return Boolean
      */
-    public function isJson(){
+    public function isJson() {
         return $this->json;
     }
-    
+
     /**
      * Da chiamare se la risposta contiene dati json
      */
-    public function toggleJson(){
+    public function toggleJson() {
         $this->json = true;
-    }
-    
-
-    
-    /**
-     * Restituisce il valore corrente del token per fare in modo che
-     * un amministratore possa impersonare uno studente o un docente
-     * @param string $token
-     */
-    public function setImpToken($token) {
-        $this->impToken = $token;
-    }
-
-    /**
-     * Scrive un token per gestire quale sia l'utente che l'amministratore
-     * sta impersonando per svolgere delle operazioni in sua vece. 
-     * 
-     * Questo metodo concentra in un solo punto il mantenimento di questa
-     * informazione, che deve essere appesa per ogni get e per ogni post
-     * quando si accede all'interfaccia dello studente o del docente 
-     * in modalita' amministratore, in modo che possano essere impersonati 
-     * piu' utenti tramite diversi schede dello stesso browser
-     * 
-     * Se avessimo inserito questa informazione in sessione, sarebbe stato 
-     * possibile gestirne solo uno. Inoltre, in caso di piu' schede aperte con 
-     * lo stesso browser, i dati sarebbero stati mescolati.
-     * 
-     * Questo e' un esempio di gestione di variabili a livello pagina. 
-     * 
-     * @param string $pre il prefisso per attaccare il parametro del token nella 
-     * query string. Si usi '?' se il token e' il primo parametro e '&' altrimenti
-     * @param int $method metodo HTTP (get o set)
-     * @return string il valore da scrivere nella URL in caso di get o come
-     * hidden input in caso di form
-     */
-    public function scriviToken($pre = '', $method = self::get) {
-        //$imp = BaseController::impersonato;
-        switch ($method) {
-            case self::get:
-                if (isset($this->impToken)) {
-                    // nel caso della 
-                    return $pre . "$imp=$this->impToken";
-                }
-                break;
-
-            case self::post:
-                if (isset($this->impToken)) {
-                    return "<input type=\"hidden\" name=\"$imp\" value=\"$this->impToken\"/>";
-                }
-                break;
-        }
-
-        return '';
     }
 
 }

@@ -90,12 +90,11 @@ class BaseController {
     }
 
     /**
-     * Imposta la vista master.php per visualizzare la pagina di gestione
-     * dello studente
+     * Imposta la vista master.php per visualizzare la pagina di gestione del cliente
      * @param ViewDescriptor $vd il descrittore della vista
      */
     protected function showHomeCliente($vd) {
-        // mostro la home degli studenti
+        // mostro la home dei clienti
 
         $vd->setTitolo("UniCars - noleggi ");
         $vd->setLogoFile(basename(__DIR__) . '/../view/cliente/logo.php');
@@ -104,12 +103,11 @@ class BaseController {
     }
 
     /**
-     * Imposta la vista master.php per visualizzare la pagina di gestione
-     * del docente
+     * Imposta la vista master.php per visualizzare la pagina di gestione del dipendente
      * @param ViewDescriptor $vd il descrittore della vista
      */
     protected function showHomeDipendente($vd) {
-        // mostro la home dei docenti
+        // mostro la home dei dipendenti
         $vd->setTitolo("UniCars - dipendenti ");
         $vd->setLogoFile(basename(__DIR__) . '/../view/dipendente/logo.php');
         $vd->setLeftBarFile(basename(__DIR__) . '/../view/dipendente/leftBar.php');
@@ -172,7 +170,7 @@ class BaseController {
     }
 
     /**
-     * Aggiorno l'indirizzo di un utente (comune a Studente e Docente)
+     * Aggiorno l'indirizzo di un utente (comune a Cliente e Dipendente)
      * @param User $user l'utente da aggiornare
      * @param array $request la richiesta http da gestire
      * @param array $msg riferimento ad un array da riempire con eventuali
@@ -215,7 +213,7 @@ class BaseController {
     }
 
     /**
-     * Aggiorno l'indirizzo email di un utente (comune a Studente e Docente)
+     * Aggiorno l'indirizzo email di un utente (comune a Cliente e Dipendente)
      * @param User $user l'utente da aggiornare
      * @param array $request la richiesta http da gestire
      * @param array $msg riferimento ad un array da riempire con eventuali
@@ -238,7 +236,7 @@ class BaseController {
 
 
     /**
-     * Aggiorno la password di un utente (comune a Studente e Docente)
+     * Aggiorno la password di un utente (comune a Cliente e Dipendente)
      * @param User $user l'utente da aggiornare
      * @param array $request la richiesta http da gestire
      * @param array $msg riferimento ad un array da riempire con eventuali

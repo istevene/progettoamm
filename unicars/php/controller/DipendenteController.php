@@ -6,8 +6,7 @@ include_once basename(__DIR__) . '/../model/UserFactory.php';
 include_once basename(__DIR__) . '/../model/Veicolo.php';
 
 /**
- * Controller che gestisce la modifica dei dati dell'applicazione relativa ai 
- * Docenti da parte di utenti con ruolo Docente o Amministratore 
+ * Controller che gestisce la modifica dei dati dell'applicazione relativa ai dipendenti
  *
  * @author Davide Spano
  */

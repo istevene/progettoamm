@@ -4,10 +4,8 @@ include_once 'BaseController.php';
 //include_once basename(__DIR__) . '/../model/PrenotazioneFactory.php';
 
 /**
- * Controller che gestisce la modifica dei dati dell'applicazione relativa agli 
- * Studenti da parte di utenti con ruolo Studente o Amministratore 
+ * Controller che gestisce la modifica dei dati dell'applicazione relativa ai clienti
  *
- * @author Davide Spano
  */
 class ClienteController extends BaseController {
 
@@ -172,18 +170,24 @@ class ClienteController extends BaseController {
                         } else {
                             $msg[] = '<li> Inserire una data di fine valida </li>';
                         }
-
-                        $costo = (($datafine->getTimeStamp() - $datainizio->getTimeStamp()) / 86400 + 1 ) * $nuova->getVeicolo()->getModello()->getPrezzo();
-                        $nuova->setCosto($costo);
+                        
+                        
+                        if (count($msg) == 0) {
+                            if($datafine->getTimeStamp() < $datainizio->getTimeStamp()){
+                                $msg[] = '<li>La data di inizio è successiva alla data di fine</li>';
+                            }
+                        }
 
                         //controllo che il veicolo sia libero tutti i giorni della prenotazione
                         if (count($msg) == 0) {
+                            $costo = (($datafine->getTimeStamp() - $datainizio->getTimeStamp()) / 86400 + 1 ) * $nuova->getVeicolo()->getModello()->getPrezzo();
+                            $nuova->setCosto($costo);
                             $flag = true;
                             $iteratore = $datainizio->getTimeStamp();
                             $fine = $datafine->getTimeStamp();
                             while ($iteratore <= $fine && $flag) {
-                                    //$msg[] = '<li>Iteratore '.$iteratore.'</li>';
-                                    if (!NoleggioFactory::instance()->isVeicoloPrenotabile($request['idveicolo'], $iteratore)) {
+                                //$msg[] = '<li>Iteratore '.$iteratore.'</li>';
+                                if (!NoleggioFactory::instance()->isVeicoloPrenotabile($request['idveicolo'], $iteratore)) {
                                     $msg[] = '<li> Il veicolo non è prenotabile per tutto l\'intervallo scelto</li>';
                                     $flag = false;
                                 }
@@ -197,7 +201,7 @@ class ClienteController extends BaseController {
                             }
                         }
 
-                        $this->creaFeedbackUtente($msg, $vd, "Prenotazione aggiunta");
+                        $this->creaFeedbackUtente($msg, $vd, "Prenotazione aggiunta, costo: ". $nuova->getCosto()." €");
                         $veicoli = VeicoloFactory::instance()->getVeicoli();
                         $this->showHomeUtente($vd);
                         break;

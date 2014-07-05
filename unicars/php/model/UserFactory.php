@@ -71,7 +71,7 @@ class UserFactory {
             return $cliente;
         }
 
-        // ora cerco un docente
+        // ora cerco un dipendente
         $query = "select * from dipendenti where username = ? and password = ?";
 
         $stmt = $mysqli->stmt_init();
@@ -90,61 +90,15 @@ class UserFactory {
             return null;
         }
 
-        $docente = self::caricaDipendenteDaStmt($stmt);
-        if (isset($docente)) {
-            // ho trovato un docente
+        $dipendente = self::caricaDipendenteDaStmt($stmt);
+        if (isset($dipendente)) {
             $mysqli->close();
-            return $docente;
+            return $dipendente;
         }
     }
 
     /**
-     * Restituisce un array con i Docenti presenti nel sistema
-     * @return array
-     */
-    public function &getListaDocenti() {
-        $docenti = array();
-        $query = "select 
-               docenti.id docenti_id,
-               docenti.nome docenti_nome,
-               docenti.cognome docenti_cognome,
-               docenti.email docenti_email,
-               docenti.citta docenti_citta,
-               docenti.cap docenti_cap,
-               docenti.via docenti_via,
-               docenti.provincia docenti_provincia,
-               docenti.numero_civico docenti_numero_civico,
-               docenti.ricevimento docenti_ricevimento,
-               docenti.username docenti_username,
-               docenti.password docenti_password,
-               dipartimenti.id dipartimenti_id,
-               dipartimenti.nome dipartimenti_nome
-               
-               from docenti 
-               join dipartimenti on docenti.dipartimento_id = dipartimenti.id";
-        $mysqli = Db::getInstance()->connectDb();
-        if (!isset($mysqli)) {
-            error_log("[getListaDocenti] impossibile inizializzare il database");
-            $mysqli->close();
-            return $docenti;
-        }
-        $result = $mysqli->query($query);
-        if ($mysqli->errno > 0) {
-            error_log("[getListaDocenti] impossibile eseguire la query");
-            $mysqli->close();
-            return $docenti;
-        }
-
-        while ($row = $result->fetch_array()) {
-            $docenti[] = self::creaDocenteDaArray($row);
-        }
-
-        $mysqli->close();
-        return $docenti;
-    }
-
-    /**
-     * Restituisce la lista degli studenti presenti nel sistema
+     * Restituisce la lista dei clienti presenti nel sistema
      * @return array
      */
     public function &getListaClienti() {
@@ -161,7 +115,7 @@ class UserFactory {
             password as clienti_password,
             numerotel as clienti_numerotel 
             FROM `clienti` ";
-        
+
         $mysqli = Db::getInstance()->connectDb();
         if (!isset($mysqli)) {
             error_log("[getListaClienti] impossibile inizializzare il database");
@@ -267,9 +221,9 @@ class UserFactory {
     }
 
     /**
-     * Crea un docente da una riga del db
+     * Crea un dipendente da una riga del db
      * @param type $row
-     * @return \Docente
+     * @return \Dipendente
      */
     public function creaDipendenteDaArray($row) {
         $dipendente = new Dipendente();
@@ -358,8 +312,8 @@ class UserFactory {
     }
 
     /**
-     * Rende persistenti le modifiche all'anagrafica di un docente sul db
-     * @param Docente $d il docente considerato
+     * Rende persistenti le modifiche all'anagrafica di un dipendente sul db
+     * @param Dipendentee $d il dipendente considerato
      * @param mysqli_stmt $stmt un prepared statement
      * @return int il numero di righe modificate
      */
@@ -382,7 +336,7 @@ class UserFactory {
             return 0;
         }
 
-       if (!$stmt->bind_param('ssssisssi', $d->getPassword(), $d->getNome(), $d->getCognome(), $d->getEmail(), $d->getNumeroCivico(), $d->getCitta(), $d->getVia(), $d->getNumeroTel(), $d->getId())) {
+        if (!$stmt->bind_param('ssssisssi', $d->getPassword(), $d->getNome(), $d->getCognome(), $d->getEmail(), $d->getNumeroCivico(), $d->getCitta(), $d->getVia(), $d->getNumeroTel(), $d->getId())) {
             error_log("[salvaDipendente] impossibile" .
                     " effettuare il binding in input");
             return 0;
@@ -398,7 +352,7 @@ class UserFactory {
     }
 
     /**
-     * Carica un docente eseguendo un prepared statement
+     * Carica un dipentente eseguendo un prepared statement
      * @param mysqli_stmt $stmt
      * @return null
      */
