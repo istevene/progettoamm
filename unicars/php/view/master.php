@@ -12,7 +12,7 @@ if (!$vd->isJson()) {
             <base href="<?= Settings::getApplicationPath() ?>php/"/>
             <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
             <link rel="stylesheet" type="text/css" href="../css/stile.css">
-            <link rel="shortcut icon" type="image/x-icon" href="../images/favicon.ico" />
+            <link rel="shortcut icon" type="image/x-icon" href="../img/favicon.png" />
             <?php
             foreach ($vd->getScripts() as $script) {
                 ?>
