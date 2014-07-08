@@ -27,6 +27,7 @@ class NoleggioFactory {
     /**
      * Controlla che il veicolo passato sia prenotabile
      * @param int $id Identificatore del veicolo
+     * @param string $data Data nella quale verificare la prenotabilità nel formato Y-m-d
      * @return \Boolean true se il veicolo è prenotabile
      */
     public function isVeicoloPrenotabile($id, $data) {
@@ -99,6 +100,15 @@ class NoleggioFactory {
         return $prenotabile;
     }
 
+    /**
+     * Cerca un noleggio corrispondente ai parameti passati
+     * @param User $user
+     * @param int $veicolo_id
+     * @param int $cliente_id
+     * @param int $datainizio
+     * @param int $datafine
+     * @return array|\Veicolo
+     */
     public function &ricercaNoleggi($user, $veicolo_id, $cliente_id, $datainizio, $datafine) {
         $noleggi = array();
 
@@ -249,6 +259,11 @@ class NoleggioFactory {
         return $noleggio;
     }
 
+    /**
+     * Salva il noleggio passato nel database, con transazione
+     * @param Noleggio $noleggio
+     * @return true se il salvataggio è andato a buon fine
+     */
     public function nuovo($noleggio) {
         $query = "insert into noleggi (idauto, idcliente, datainizio, datafine, costo)
                   values (?, ?, ?, ?, ?)";
@@ -295,6 +310,11 @@ class NoleggioFactory {
         return $stmt->affected_rows;
     }
 
+    /**
+     * Restituisce un array contenente i noleggi fatti dal cliente passato
+     * @param Cliente $user
+     * @return array|\Noleggi
+     */
     public function &noleggiPerCliente($user) {
         $noleggi = array();
 

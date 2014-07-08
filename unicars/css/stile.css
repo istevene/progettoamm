@@ -40,6 +40,9 @@ header {
     list-style-type: none;
 }
 
+#sidebar1 h2{
+    padding-left: 40px;
+}
 
 
 #content {
@@ -205,4 +208,87 @@ div.error {
 
 div.confirm{
     color: green;
+}
+
+/*responsive*/
+
+@media only screen and (max-width: 900px){
+    body{
+        font: 13px/15px "Open Sans", Arial, sans-serif;
+    }
+
+    #page{
+        width: 600px;
+        position: absolute;
+        left: 50%;
+        margin: 0px 0px 0px -300px;
+        border: 0px;
+        border-radius: 0px;
+        box-shadow: 0px 0px 0px;
+    }
+
+    header, #footer{
+        margin: 0px;
+        background-color: #1c345a;
+        border-top-left-radius: 0px;
+        border-top-right-radius: 0px;
+    } 
+
+    #footer{
+        border-bottom-left-radius: 0px;
+        border-bottom-right-radius: 0px;
+    }
+
+    #sidebar1 {
+        display: inline;
+        float: none;
+    }
+
+    #sidebar1 ul{
+        padding-left: 25px;
+        margin: 0px;        
+    }
+    
+    #sidebar1 h2 {
+        padding: 10px 0px 10px 25px;
+    }
+
+    #content {
+        padding: 25px;
+        margin: 0px;
+        border: 0px;
+        font-size: 13px;
+        min-height: 0px;
+    }
+
+    #logo{
+        text-align: center;
+    }
+
+
+    #footer p{
+        text-align: center;
+    }
+
+    footer a:link, footer a:visited{
+        color: white;
+    }
+
+    #htmlval, #cssval{
+        display: none;  
+    }
+
+    div#logo h1 {
+        background-repeat: no-repeat;
+        background-position: center left;
+        vertical-align: middle;
+        line-height: 50px;
+        padding-left: 10px;
+        margin-top: 0px;
+        margin-bottom: 0px;
+        color: #ffffff;
+        display: block;
+    }
+
+
 }

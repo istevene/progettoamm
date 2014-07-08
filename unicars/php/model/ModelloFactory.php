@@ -25,6 +25,11 @@ class ModelloFactory {
         return self::$singleton;
     }
 
+    /**
+     * Restituisce il modello che ha l'identificatore passato
+     * @param int $id
+     * @return \Modello
+     */
     public function &getModelloPerId($id) {
         $modello = new Modello();
         $query = "select * from modelli where id = ?";
@@ -86,7 +91,7 @@ class ModelloFactory {
 
     /**
      * Restituisce la lista di tutti i Modelli
-     * @return array|\Dipartimento
+     * @return array|\Modello
      */
     public function &getModelli() {
 
@@ -114,9 +119,9 @@ class ModelloFactory {
     }
 
     /**
-     * Crea un oggetto di tipo Costruttore a partire da una riga del DB
+     * Crea un oggetto di tipo Modello a partire da una riga del DB
      * @param type $row
-     * @return \Dipartimento
+     * @return \Modello
      */
     private function getModello($row) {
         $modello = new Modello();

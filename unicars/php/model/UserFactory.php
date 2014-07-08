@@ -7,8 +7,6 @@ include_once 'Db.php';
 
 /**
  * Classe per la creazione degli utenti del sistema
- *
- * @author Davide Spano
  */
 class UserFactory {
 

@@ -18,14 +18,14 @@ switch ($vd->getSottoPagina()) {
 
     default:
         ?>
-        <h2 class="icon-title" id="h-home">Pannello di Controllo</h2>
+        <h2>Pannello di Controllo</h2>
         <p>
             Benvenuto, <?= $user->getNome() ?>
         </p>
         <p>
             Scegli una fra le seguenti sezioni:
         </p>
-        <ul class="panel">
+        <ul>
             <li><a href="cliente/anagrafica">Anagrafica</a></li>
             <li><a href="cliente/noleggi">Elenco Noleggi</a></li>
             <li><a href="cliente/veicoli">Veicoli</a></li>            

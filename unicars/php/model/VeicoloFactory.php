@@ -26,8 +26,8 @@ class VeicoloFactory {
     }
 
     /**
-     * Restituisce tutti i CorsiDiLaurea esistenti
-     * @return array|\CorsoDiLaurea
+     * Restituisce tutti i veicoli esistenti
+     * @return array|\Veicolo
      */
     public function &getVeicoli() {
         $mysqli = Db::getInstance()->connectDb();
@@ -54,7 +54,7 @@ class VeicoloFactory {
     /**
      * Popola una lista di veicoli con una query variabile
      * @param mysqli_stmt $stmt
-     * @return array|\Veicoli
+     * @return array|\Veicolo
      */
     private function &inizializzaListaVeicoli(mysqli_stmt $stmt) {
         $veicoli = array();
@@ -98,7 +98,12 @@ class VeicoloFactory {
         $veicolo->setPrenotabile(NoleggioFactory::instance()->isVeicoloPrenotabile($row['veicoli_id'], "now"));
         return $veicolo;
     }
-
+    
+    /**
+     * Salva il veicolo passato nel database
+     * @param Veicolo $veicolo
+     * @return true se il salavataggio è andato a buon fine
+     */
     public function nuovo($veicolo) {
         $query = "insert into veicoli (idmodello, anno, targa)
                   values (?, ?, ?)";
@@ -137,6 +142,11 @@ class VeicoloFactory {
         return $stmt->affected_rows;
     }
     
+    /**
+     * Cancella il veicolo che ha l'identificatore passato
+     * @param int $id
+     * @return true se la cancellazione è andata a buon fine
+     */
     public function cancellaPerId($id) {
         $query = "delete from veicoli where id = ?";
 
@@ -174,6 +184,11 @@ class VeicoloFactory {
         return $stmt->affected_rows;
     }
     
+    /**
+     * Restituisce il veicolo che ha l'identificatore passato
+     * @param int $id Identificatore
+     * @return \Veicolo
+     */
     public function &getVeicoloPerId($id){
         $veicolo = new Veicolo();
         $query = "select * from veicoli where id = ?";

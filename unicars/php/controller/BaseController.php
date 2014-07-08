@@ -200,10 +200,6 @@ class BaseController {
             }
         }
 
-
-
-
-
         // salviamo i dati se non ci sono stati errori
         if (count($msg) == 0) {
             if (UserFactory::instance()->salva($user) != 1) {

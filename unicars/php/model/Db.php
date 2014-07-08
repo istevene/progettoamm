@@ -1,17 +1,12 @@
 <?php
 include_once basename(__DIR__) . '/../Settings.php';
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Classe che contiene i metodi 
+ * per la connesione al database
  */
 
-/**
- * Description of Db
- *
- * @author amm
- */
 class Db {
-    //put your code here
+
     
     private function __construct() {
         

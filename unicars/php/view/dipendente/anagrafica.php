@@ -1,6 +1,6 @@
 <div class="input-form">
-    <h2 class="icon-title" id="h-personali">Dati personali</h2>
-    <ul class="none">
+    <h2>Dati personali</h2>
+    <ul>
         <li><strong>Nome:</strong> <?= $user->getNome() ?></li>
         <li><strong>Cognome:</strong> <?= $user->getCognome() ?></li>
     </ul>

@@ -1,7 +1,6 @@
 <?php
 
 include_once 'BaseController.php';
-//include_once basename(__DIR__) . '/../model/PrenotazioneFactory.php';
 
 /**
  * Controller che gestisce la modifica dei dati dell'applicazione relativa ai clienti
@@ -219,22 +218,6 @@ class ClienteController extends BaseController {
 
         // includo la vista
         require basename(__DIR__) . '/../view/master.php';
-    }
-
-    private function getVeicoloPerIndice(&$veicoli, &$request, &$msg) {
-        if (isset($request['veicolo'])) {
-            // indice per il veicolo definito, verifichiamo che sia un intero
-            $intVal = filter_var($request['veicolo'], FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
-            if (isset($intVal) && $intVal > -1 && $intVal < count($veicoli)) {
-                return $veicoli[$intVal];
-            } else {
-                $msg[] = "<li> Il veicolo specificato non esiste </li>";
-                return null;
-            }
-        } else {
-            $msg[] = '<li>Veicolo non specificato<li>';
-            return null;
-        }
     }
 
 }

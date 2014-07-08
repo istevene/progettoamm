@@ -75,8 +75,8 @@ class CostruttoreFactory {
     }
 
     /**
-     * Restituisce la lista di tutti i Costruttoris
-     * @return array|\Dipartimento
+     * Restituisce la lista di tutti i Costruttori
+     * @return array|\Costruttore
      */
     public function &getCostruttori() {
 
@@ -106,7 +106,7 @@ class CostruttoreFactory {
     /**
      * Crea un oggetto di tipo Costruttore a partire da una riga del DB
      * @param type $row
-     * @return \Dipartimento
+     * @return \Costruttore
      */
     private function getCostruttore($row) {
         $costruttore = new Costruttore();

@@ -1,15 +1,10 @@
 <?php
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Classe che descrive il noleggio di un veicolo
+ *
  */
 
-/**
- * Description of Prenotazione
- *
- * @author amm
- */
 class Noleggio {
     
     private $id;

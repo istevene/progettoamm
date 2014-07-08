@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Classe che descrive un modello di veicolo
+ */
 
 class Modello {
     /**

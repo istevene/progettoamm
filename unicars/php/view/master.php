@@ -37,15 +37,10 @@ if (!$vd->isJson()) {
                 </header>
 
                 <div id="sidebar1">
-                    <ul>
-                        <li id="categories">
-                            <?php
-                            $left = $vd->getLeftBarFile();
-                            require "$left";
-                            ?>
-                        </li>
-                    </ul>
-
+                    <?php
+                    $left = $vd->getLeftBarFile();
+                    require "$left";
+                    ?>
                 </div>
 
                 <div id="content">
