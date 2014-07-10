@@ -27,7 +27,13 @@
             <li>Registrare un noleggio</li>
             <li>Visualizzare lo storico dei propri noleggi</li>
         </ul>
-        Le date sono nel formato Y-m-d
+    </p>
+    <p>
+        <h3>Note</h3>
+        <ul>
+            <li>Le date sono nel formato Y-m-d</li>7
+            <li>Il costo giornaliero è una caratteristica del modello di veicolo, non del singolo veicolo</li>
+        </ul>
     </p>
     <p>
     <h3>Requisiti soddisfatti</h3>
