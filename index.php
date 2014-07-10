@@ -31,7 +31,7 @@
     <p>
         <h3>Note</h3>
         <ul>
-            <li>Le date sono nel formato Y-m-d</li>7
+            <li>Le date sono nel formato Y-m-d</li>
             <li>Il costo giornaliero è una caratteristica del modello di veicolo, non del singolo veicolo</li>
         </ul>
     </p>
